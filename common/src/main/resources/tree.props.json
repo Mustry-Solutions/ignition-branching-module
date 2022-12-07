@@ -1,0 +1,86 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "data"
+    ],
+    "properties": {
+        "data": {
+            "type": "array",
+            "description": "Data used to build the tree view.",
+            "default": [
+                {
+                    "color": "green",
+                    "id": 0,
+                    "nextId": [1, 5],
+                    "category": "main"
+                },
+                {
+                    "color": "green",
+                    "id": 1,
+                    "nextId": [2],
+                    "category": "main"
+                },
+                {
+                    "color": "green",
+                    "id": 2,
+                    "nextId": [3, 8],
+                    "category": "main"
+                },
+                {
+                    "color": "green",
+                    "id": 3,
+                    "nextId": [4],
+                    "category": "main"
+                },
+                {
+                    "color": "green",
+                    "id": 4,
+                    "nextId": [],
+                    "category": "main"
+                },
+                {
+                    "color": "blue",
+                    "id": 5,
+                    "nextId": [6],
+                    "category": "lakkerij"
+                },
+                {
+                    "color": "blue",
+                    "id": 6,
+                    "nextId": [7],
+                    "category": "lakkerij"
+                },
+                {
+                    "color": "blue",
+                    "id": 7,
+                    "nextId": [3],
+                    "category": "lakkerij"
+                },
+                {
+                    "color": "orange",
+                    "id": 8,
+                    "nextId": [4, 9],
+                    "category": "gieter"
+                },
+                {
+                    "color": "purple",
+                    "id": 9,
+                    "nextId": [4],
+                    "category": "gieter"
+                }
+            ]
+        },
+        "fontSize": {
+            "type": "string",
+            "description": "Font size of tree labels",
+            "default": "1rem"
+        },
+        "style": {
+            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+            "default": {
+                "classes": ""
+            }
+        }
+    }
+}
