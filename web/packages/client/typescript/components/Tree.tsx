@@ -8,15 +8,12 @@ import {
     SizeObject
 } from '@inductiveautomation/perspective-client';
 
-interface TreeProps {
-    data: Array<InputType>;
-}
-
 interface InputType {
     id: number;
     color: string;
     nextId: Array<number>;
     category: string;
+    fill: boolean;
 }
 
 interface Node {
@@ -24,31 +21,64 @@ interface Node {
     color: string;
     children: Array<number>;
     category: string;
+    fill: boolean;
 }
 
 interface Dict {
     [id: number]: Node;
 }
 
-export class Tree extends Component<ComponentProps<TreeProps>, any> {
-    categoryLevels: { [ category: string ]: number } = {};
+interface TreeProps {
+    data: InputType[];
+    rootId: number;
+}
 
-    convertInput(input: Array<InputType>): Dict {
-        return input.reduce((obj, node) => (
-            obj[node.id] = { id: node.id, color: node.color, children: node.nextId, category: node.category }, obj
-        ), {})
+interface TreeState {
+    categoryLevels: { [ category: string ]: number };
+    yOffset: number;
+    pathsRender: React.ReactElement<any, any>[];
+    nodesRender: React.ReactElement<any, any>[];
+}
+
+export class Tree extends Component<ComponentProps<TreeProps>, TreeState> {
+    constructor(props: ComponentProps<TreeProps>) {
+        super(props);
+        this.state = {
+            categoryLevels: {},
+            yOffset: 50,
+            pathsRender: [],
+            nodesRender: []
+        }
     }
 
-    build(nodes: Dict, root: number) {
+    componentDidMount(): void {
+        this.build(this.convertInput(this.props.data), this.props.rootId);
+        this.setYOffset();
+    }
+
+    componentDidUpdate(prevProps: Readonly<ComponentProps<TreeProps>>, prevState: Readonly<TreeState>, snapshot?: any): void {
+        if (prevProps.data != this.props.data || prevProps.rootId != this.props.rootId) {
+            this.build(this.convertInput(this.props.data), this.props.rootId);
+            this.setYOffset();
+        }
+    }
+
+    convertInput(input: Array<InputType>): Dict {
+        return input.reduce((obj: Dict, node: InputType) => (
+            obj[node.id] = { id: node.id, color: node.color, children: node.nextId, category: node.category, fill: node.fill }, obj
+        ), {});
+    }
+
+    build(nodes: Dict, root: number): void {
         const xOffset: number = 50;
         const yOffset: number = 50;
-        let level: number = -1;
+        let level: number = 1;
     
         let buffer: Array<[ Node, { x: number, y: number }, number ]> = [[nodes[root], {x: 0, y: 0}, -1]];
-        let passedNodes: { [id: number]: { id: number, color: string, children: Array<number>, category: string, position: { x: number, y: number }, originId: number } } = {};
+        let passedNodes: { [id: number]: { id: number, color: string, children: Array<number>, category: string, fill: boolean, position: { x: number, y: number }, originId: number } } = {};
         let toPass: Set<number> = new Set();
         let duplicates: Array<[ duplicateId: number, originId: number ]> = [];
-        this.categoryLevels[nodes[root].category] = 0;
+        this.state.categoryLevels[nodes[root].category] = 0;
     
         while (buffer.length > 0) {
             const [node, position, originId] = buffer.shift()!;
@@ -58,16 +88,24 @@ export class Tree extends Component<ComponentProps<TreeProps>, any> {
                     duplicates.push([childId, node.id]);
                 }
                 else {
-                    if (!this.categoryLevels.hasOwnProperty(nodes[childId].category)) {
-                        this.categoryLevels[nodes[childId].category] = this.categoryLevels[node.category] + yOffset * level;
-                        level *= -1;
+                    if (!this.state.categoryLevels.hasOwnProperty(nodes[childId].category)) {
+                        let newOffset = this.state.categoryLevels[node.category] > 0 ? this.state.categoryLevels[node.category] + yOffset : this.state.categoryLevels[node.category] - yOffset;
+                        if (this.state.categoryLevels[node.category] === 0) {
+                            newOffset *= level;
+                            if (level < 0) {
+                                level--;
+                            }
+                            level *= -1;
+                        }
+
+                        this.state.categoryLevels[nodes[childId].category] = this.state.categoryLevels[node.category] + newOffset;
                     }
     
                     buffer.push([
                         nodes[childId],
                         {
                             x: position.x + xOffset,
-                            y: this.categoryLevels[nodes[childId].category]
+                            y: this.state.categoryLevels[nodes[childId].category]
                         },
                         node.id
                     ]);
@@ -78,8 +116,9 @@ export class Tree extends Component<ComponentProps<TreeProps>, any> {
             passedNodes[node.id] = {...node, position, originId}
         }
     
-        let output: Array<any> = [];
-        let buffer2: Array<number> = [];
+        let pathsRender: React.ReactElement<any, any>[] = [];
+        let nodesRender: React.ReactElement<any, any>[] = [];
+        let buffer2: number[] = [];
     
         for (const [duplicateId, originId] of duplicates) {
             if (passedNodes[originId].position.x >= passedNodes[duplicateId].position.x) {
@@ -99,28 +138,38 @@ export class Tree extends Component<ComponentProps<TreeProps>, any> {
                 }
             }
     
-            output.push((
-                <g id={`dup${originId}-${duplicateId}`} key={`dup${originId}-${duplicateId}`}>
-                    <path d={`M ${passedNodes[originId].position.x} ${passedNodes[originId].position.y} L ${passedNodes[duplicateId].position.x} ${passedNodes[duplicateId].position.y}`} stroke='black' />
+            pathsRender.push((
+                <g id={`p${originId}-${duplicateId}`} key={`p${originId}-${duplicateId}`}>
+                    <path d={
+                        `M ${passedNodes[originId].position.x} ${passedNodes[originId].position.y} C ${passedNodes[duplicateId].position.x} ${passedNodes[originId].position.y} ${passedNodes[originId].position.x} ${passedNodes[duplicateId].position.y} ${passedNodes[duplicateId].position.x} ${passedNodes[duplicateId].position.y}`
+                        } stroke='black' strokeWidth={2} fill='none' />
                 </g>
             ));
         }
 
-        let buffer3: Array<{ id: number, color: string, children: Array<number>, category: string, position: { x: number, y: number }, originId: number }> = [ passedNodes[root] ];
+        let buffer3: Array<{ id: number, color: string, children: Array<number>, category: string, fill: boolean, position: { x: number, y: number }, originId: number }> = [ passedNodes[root] ];
         let checked: Set<number> = new Set();
+
         while (buffer3.length > 0) {
             let node = buffer3.shift()!;
 
             if (!checked.has(node.id)) {
-                output.push((
+                if (node.originId !== -1) {
+                    pathsRender.push((
+                        <g id={`p${node.id}-${node.originId}`} key={`p${node.id}-${node.originId}`}>
+                            <path d={
+                                `M ${passedNodes[node.originId].position.x} ${passedNodes[node.originId].position.y} C ${node.position.x} ${passedNodes[node.originId].position.y} ${passedNodes[node.originId].position.x} ${node.position.y} ${node.position.x} ${node.position.y}`
+                                } stroke='black' strokeWidth={2} fill='none' />
+                        </g>
+                    ));
+                }
+
+                nodesRender.push((
                     <g id={node.id.toString()} key={node.id}>
                         <g transform={`translate(${node.position.x}, ${node.position.y})`}>
-                            <circle r='10' fill={node.color} />
+                            <circle r='10' strokeWidth='2' stroke={node.color} fill={node.fill ? node.color : 'white'} />
                             <text y='25' x='-5'>{node.id}</text>
                         </g>
-                        {node.originId !== -1 &&
-                            <path d={`M ${passedNodes[node.originId].position.x} ${passedNodes[node.originId].position.y} L ${node.position.x} ${node.position.y}`} stroke='black' />
-                        }
                     </g>
                 ));
 
@@ -132,28 +181,30 @@ export class Tree extends Component<ComponentProps<TreeProps>, any> {
             }
         }
 
-        return output;
+        this.setState({
+            pathsRender: pathsRender,
+            nodesRender: nodesRender
+        });
     }
 
-    getYOffset() {
+    setYOffset(): void {
         let lowest: number = 0;
 
-        for (const offset of Object.values(this.categoryLevels)) {
+        for (const offset of Object.values(this.state.categoryLevels)) {
             if (offset < lowest) {
                 lowest = offset;
             }
         }
 
-        return 50 + (lowest * -1);
+        this.setState({ yOffset: 50 + (lowest * -1) });
     }
 
     render() {
-        const { props: { data }, emit } = this.props;
-
         return (
-            <svg { ...emit() }>
-                <g transform={`translate(50, ${this.getYOffset()})`}>
-                    { this.build(this.convertInput(data), 0) }
+            <svg { ...this.props.emit() }>
+                <g transform={`translate(50, ${this.state.yOffset})`}>
+                    { this.state.pathsRender }
+                    { this.state.nodesRender }
                 </g>
             </svg>
         );
