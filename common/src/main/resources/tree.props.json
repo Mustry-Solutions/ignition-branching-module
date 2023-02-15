@@ -2,9 +2,15 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "data"
+      "rootId",
+      "data"
     ],
     "properties": {
+        "rootId": {
+          "type": "number",
+          "description": "Entry point for tree.",
+          "default": 0
+        },
         "data": {
             "type": "array",
             "description": "Data used to build the tree view.",

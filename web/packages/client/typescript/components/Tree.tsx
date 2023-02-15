@@ -52,13 +52,15 @@ export class Tree extends Component<ComponentProps<TreeProps>, TreeState> {
     }
 
     componentDidMount(): void {
-        this.build(this.convertInput(this.props.data), this.props.rootId);
-        this.setYOffset();
+        if (this.props.props.data) {
+            this.build(this.convertInput(this.props.props.data), this.props.props.rootId);
+            this.setYOffset();
+        }
     }
 
     componentDidUpdate(prevProps: Readonly<ComponentProps<TreeProps>>, prevState: Readonly<TreeState>, snapshot?: any): void {
-        if (prevProps.data != this.props.data || prevProps.rootId != this.props.rootId) {
-            this.build(this.convertInput(this.props.data), this.props.rootId);
+        if (prevProps.props.data != this.props.props.data || prevProps.props.rootId != this.props.props.rootId) {
+            this.build(this.convertInput(this.props.props.data), this.props.props.rootId);
             this.setYOffset();
         }
     }
@@ -200,6 +202,8 @@ export class Tree extends Component<ComponentProps<TreeProps>, TreeState> {
     }
 
     render() {
+        console.log(this.state.pathsRender);
+        console.log(this.state.nodesRender);
         return (
             <svg { ...this.props.emit() }>
                 <g transform={`translate(50, ${this.state.yOffset})`}>
@@ -229,9 +233,10 @@ export class TreeMeta implements ComponentMeta {
         });
     }
 
-    getPropsReducer(propTree: PropertyTree): {} {
+    getPropsReducer(propsTree: PropertyTree): TreeProps {
         return {
-            data: propTree.readArray("data", [])
+            data: propsTree.readArray("data", []),
+            rootId: propsTree.readNumber("rootId", 0)
         };
     }
 }
