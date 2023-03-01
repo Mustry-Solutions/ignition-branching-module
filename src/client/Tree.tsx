@@ -81,7 +81,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
         let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
         let level: number = 0;
         let categoryLevels: { [ category: string ]: number } = {};
-        categoryLevels[rootId] = 0;
+        categoryLevels[nodes[rootId].category] = 0;
         let maxX: number = 0;
 
         while (buffer.length > 0) {
@@ -160,6 +160,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                     x={position.x * xOffset}
                     y={position.y * yOffset}
                     color={node.color}
+                    fill={node.fill}
                 />
             );
             
@@ -189,7 +190,6 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                     {this.state.innerElements}
                 </div>
             </div>
-            
         );
     }
 }
