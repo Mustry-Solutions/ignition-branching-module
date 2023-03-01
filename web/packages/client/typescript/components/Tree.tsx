@@ -168,6 +168,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
                     x={position.x * xOffset}
                     y={position.y * yOffset}
                     color={node.color}
+                    backgroundColor={'#fafafa'}
                     fill={node.fill}
                 />
             );
