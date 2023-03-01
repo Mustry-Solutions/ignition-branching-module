@@ -1,256 +1,192 @@
 import * as React from 'react';
-
-export interface InputType {
-    id: number;
-    color: string;
-    nextId: Array<number>;
-    category: string;
-    fill: boolean;
-}
-
-interface Node {
-    id: number;
-    color: string;
-    children: Array<number>;
-    category: string;
-    fill: boolean;
-}
-
-interface Dict {
-    [id: number]: Node;
-}
+import { Connection } from './Connection';
+import { NodeElement } from './Node';
+import { BuildTree, InputType, NodeDict, Position, TreeNode } from './types';
 
 interface TreeProps {
     data: InputType[];
     rootId: number;
-}
-
-interface TreeState {
-    categoryLevels: { [ category: string ]: number };
+    minXOffset: number;
     yOffset: number;
-    pathsRender: React.ReactElement<any, any>[];
-    nodesRender: React.ReactElement<any, any>[];
+    curveSize: number;
 }
 
-export class Tree extends React.Component<TreeProps, TreeState> {
-    //elementRef: React.Ref<SVGSVGElement> | undefined;
+interface NodeState {
+    yPadding: number;
+    maxWidthElements: number;
+    width: number;
+    innerElements: JSX.Element[];
+}
 
+export class Tree extends React.Component<TreeProps, NodeState> {
+    elementRef: React.RefObject<any>;
     constructor(props: TreeProps) {
         super(props);
-        this.state = {
-            categoryLevels: {},
-            yOffset: 50,
-            pathsRender: [],
-            nodesRender: []
-        }
 
-        //this.elementRef = React.createRef();
+        this.elementRef = React.createRef();
+        this.state = {
+            yPadding: 0,
+            maxWidthElements: 0,
+            width: 0,
+            innerElements: []
+        }
     }
 
     componentDidMount(): void {
-        this.build(this.convertInput(this.props.data), this.props.rootId);
-        this.setYOffset();
+        window.addEventListener('resize', this.handleResize);
+        this.setState({width: this.elementRef.current.offsetWidth});
+
+        this.rebuildTree();
     }
 
-    componentDidUpdate(prevProps: Readonly<TreeProps>, prevState: Readonly<TreeState>, snapshot?: any): void {
-        if (prevProps.data != this.props.data || prevProps.rootId != this.props.rootId) {
-            this.build(this.convertInput(this.props.data), this.props.rootId);
-            this.setYOffset();
+    componentDidUpdate(prevProps: Readonly<TreeProps>, prevState: Readonly<NodeState>, snapshot?: any): void {
+        if (this.props !== prevProps || prevState.width !== this.state.width) {
+            this.rebuildTree();
         }
     }
 
-    convertInput(input: Array<InputType>): Dict {
-        return input.reduce((obj: Dict, node: InputType) => (
-            obj[node.id] = { id: node.id, color: node.color, children: node.nextId, category: node.category, fill: node.fill }, obj
+    handleResize = (): void => {
+        if (this.elementRef.current) {
+            this.setState({width: this.elementRef.current.offsetWidth});
+        }
+    }
+
+    rebuildTree(): void {
+        const [tree, maxX] = this.buildTree(this.convertInput(this.props.data), this.props.rootId);
+        const xOffset = (this.state.width - 150) / maxX < this.props.minXOffset ? this.props.minXOffset : (this.state.width - 150) / maxX;
+
+        const [elements, yPadding] = this.displayTree(tree, xOffset, this.props.yOffset, this.props.curveSize);
+
+        this.setState({yPadding, maxWidthElements: maxX, innerElements: elements});
+    }
+
+    convertInput(input: InputType[]): NodeDict {
+        return input.reduce((obj: NodeDict, node: InputType): NodeDict => (
+            obj[node.id] = {
+                id: node.id,
+                name: node.name,
+                color: node.color,
+                children: node.nextId,
+                category: node.category,
+                fill: node.fill
+            }, obj
         ), {});
     }
 
-    build(nodes: Dict, root: number): void {
-        const xOffset: number = 50;
-        const yOffset: number = 50;
-        let level: number = 1;
-    
-        let buffer: Array<[ Node, { x: number, y: number }, number ]> = [[nodes[root], {x: 0, y: 0}, -1]];
-        let passedNodes: { [id: number]: { id: number, color: string, children: Array<number>, category: string, fill: boolean, position: { x: number, y: number }, originId: number } } = {};
-        let toPass: Set<number> = new Set();
-        let duplicates: Array<[ duplicateId: number, originId: number ]> = [];
-        this.state.categoryLevels[nodes[root].category] = 0;
-    
+    buildTree(nodes: NodeDict, rootId: number): [BuildTree, number] {
+        let result: BuildTree = {};
+        let buffer: [TreeNode, Position, number][] = [[nodes[rootId], {x: 0, y: 0}, -1]];
+        let inBuffer: Set<number> = new Set();
+        inBuffer.add(rootId);
+        let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
+        let level: number = 0;
+        let categoryLevels: { [ category: string ]: number } = {};
+        categoryLevels[rootId] = 0;
+        let maxX: number = 0;
+
         while (buffer.length > 0) {
             const [node, position, originId] = buffer.shift()!;
-    
+
             for (const childId of node.children) {
-                if (toPass.has(childId)) {
-                    duplicates.push([childId, node.id]);
+                if (inBuffer.has(childId)) {
+                    duplicateOrigins.push([childId, node.id]);
                 }
                 else {
-                    if (!this.state.categoryLevels.hasOwnProperty(nodes[childId].category)) {
-                        let newOffset = this.state.categoryLevels[node.category] > 0 ? this.state.categoryLevels[node.category] + yOffset : this.state.categoryLevels[node.category] - yOffset;
-                        if (this.state.categoryLevels[node.category] === 0) {
-                            newOffset *= level;
-                            if (level < 0) {
-                                level--;
-                            }
-                            level *= -1;
+                    if (!(nodes[childId].category in categoryLevels)) {
+                        level *= -1;
+                        if (level <= 0) {
+                            level--;
                         }
 
-                        this.state.categoryLevels[nodes[childId].category] = this.state.categoryLevels[node.category] + newOffset;
+                        categoryLevels[nodes[childId].category] = level;
                     }
-    
+
                     buffer.push([
                         nodes[childId],
                         {
-                            x: position.x + xOffset,
-                            y: this.state.categoryLevels[nodes[childId].category]
+                            x: position.x + 1,
+                            y: categoryLevels[nodes[childId].category]
                         },
                         node.id
                     ]);
-                    toPass.add(childId);
+
+                    inBuffer.add(childId);
                 }
             }
-    
-            passedNodes[node.id] = {...node, position, originId}
+
+            maxX = position.x > maxX ? position.x : maxX;
+            result[node.id] = { node, position, originIds: [originId] };
         }
-    
-        let pathsRender: React.ReactElement<any, any>[] = [];
-        let nodesRender: React.ReactElement<any, any>[] = [];
-        let buffer2: number[] = [];
-    
-        for (const [duplicateId, originId] of duplicates) {
-            if (passedNodes[originId].position.x >= passedNodes[duplicateId].position.x) {
-                let behind = passedNodes[originId].position.x - passedNodes[duplicateId].position.x + xOffset;
-                buffer2 = [duplicateId];
-                let checked = new Set();
-    
-                while (buffer2.length > 0) {
-                    const nodeId: number = buffer2.shift()!;
-                    
-                    if (!checked.has(nodeId)) {
-                        passedNodes[nodeId].position.x += behind;
-                        buffer2.push(...passedNodes[nodeId].children);
-    
-                        checked.add(nodeId);
+        
+
+        for (const [duplicateId, originId] of duplicateOrigins) {
+            if (result[originId].position.x >= result[duplicateId].position.x) {
+                let behind = result[originId].position.x - result[duplicateId].position.x + 1;
+
+                let forwarBuffer: number[] = [duplicateId];
+                let forwarded: Set<number> = new Set();
+
+                while (forwarBuffer.length > 0) {
+                    const nodeId: number = forwarBuffer.shift()!;
+
+                    if (!forwarded.has(nodeId)) {
+                        result[nodeId].position.x += behind;
+                        maxX = result[nodeId].position.x > maxX ? result[nodeId].position.x : maxX;
+
+                        forwarBuffer.push(...result[nodeId].node.children);
+                        forwarded.add(nodeId);
                     }
                 }
             }
 
-            let color = passedNodes[originId].color;
-            let from = passedNodes[originId].position;
-            let to = passedNodes[duplicateId].position;
-
-            let curveStep = from.y === to.y ? 0 : 20;
-
-            let step1 = {x: from.x + ((to.x - from.x) / 2) - curveStep, y: from.y};
-            let step2 = {x: step1.x + curveStep, y: from.y < to.y ? step1.y + curveStep : step1.y - curveStep};
-            let step3 = {x: step2.x, y: from.y < to.y ? to.y - curveStep : to.y + curveStep};
-            let step4 = {x: step3.x + curveStep, y: to.y};
-    
-            pathsRender.push((
-                <g id={`p${originId}-${duplicateId}`} key={`p${originId}-${duplicateId}`}>
-                    <path d={
-                        `M ${from.x} ${from.y} L ${step1.x} ${step1.y}`
-                        } stroke={color} strokeWidth={2} fill='none' />
-                    <path d={
-                        `M ${step1.x} ${step1.y} C ${step1.x} ${step1.y} ${step2.x} ${step1.y} ${step2.x} ${step2.y}`
-                        } stroke={color} strokeWidth={2} fill='none' />
-                    <path d={
-                        `M ${step2.x} ${step2.y} L ${step3.x} ${step3.y}
-                        `} stroke={color} strokeWidth={2} fill='none' />
-                    <path d={
-                        `M ${step3.x} ${step3.y} C ${step3.x} ${step3.y} ${step3.x} ${step4.y} ${step4.x} ${step4.y}
-                        `} stroke={color} strokeWidth={2} fill='none' />
-                    <path d={
-                        `M ${step4.x} ${step4.y} L ${to.x} ${to.y}`
-                        } stroke={color} strokeWidth={2} fill='none' />
-                </g>
-            ));
+            result[duplicateId].originIds.push(originId);
         }
 
-        let buffer3: Array<{ id: number, color: string, children: Array<number>, category: string, fill: boolean, position: { x: number, y: number }, originId: number }> = [ passedNodes[root] ];
-        let checked: Set<number> = new Set();
-
-        while (buffer3.length > 0) {
-            let node = buffer3.shift()!;
-
-            if (!checked.has(node.id)) {
-                if (node.originId !== -1) {
-                    let color = passedNodes[node.originId].color;
-                    let from = passedNodes[node.originId].position;
-                    let to = node.position;
-
-                    let curveStep = from.y === to.y ? 0 : 20;
-
-                    let step1 = {x: from.x + ((to.x - from.x) / 2) - curveStep, y: from.y};
-                    let step2 = {x: step1.x + curveStep, y: from.y < to.y ? step1.y + curveStep : step1.y - curveStep};
-                    let step3 = {x: step2.x, y: from.y < to.y ? to.y - curveStep : to.y + curveStep};
-                    let step4 = {x: step3.x + curveStep, y: to.y};
-
-                    pathsRender.push((
-                        <g id={`p${node.id}-${node.originId}`} key={`p${node.id}-${node.originId}`}>
-                            <path d={
-                                `M ${from.x} ${from.y} L ${step1.x} ${step1.y}`
-                                } stroke={color} strokeWidth={2} fill='none' />
-                            <path d={
-                                `M ${step1.x} ${step1.y} C ${step1.x} ${step1.y} ${step2.x} ${step1.y} ${step2.x} ${step2.y}`
-                                } stroke={color} strokeWidth={2} fill='none' />
-                            <path d={
-                                `M ${step2.x} ${step2.y} L ${step3.x} ${step3.y}
-                                `} stroke={color} strokeWidth={2} fill='none' />
-                            <path d={
-                                `M ${step3.x} ${step3.y} C ${step3.x} ${step3.y} ${step3.x} ${step4.y} ${step4.x} ${step4.y}
-                                `} stroke={color} strokeWidth={2} fill='none' />
-                            <path d={
-                                `M ${step4.x} ${step4.y} L ${to.x} ${to.y}`
-                                } stroke={color} strokeWidth={2} fill='none' />
-                        </g>
-                    ));
-                }
-
-                nodesRender.push((
-                    <g id={node.id.toString()} key={node.id}>
-                        <g transform={`translate(${node.position.x}, ${node.position.y})`}>
-                            <circle r='10' strokeWidth='2' stroke={node.color} fill={node.fill ? node.color : 'white'} />
-                            <text y='25' x='-5'>{node.id}</text>
-                        </g>
-                    </g>
-                ));
-
-                for (const childId of node.children) {
-                    buffer3.push(passedNodes[childId]);
-                }
-
-                checked.add(node.id);
-            }
-        }
-
-        this.setState({
-            pathsRender: pathsRender,
-            nodesRender: nodesRender
-        });
+        return [result, maxX];
     }
 
-    setYOffset(): void {
-        let lowest: number = 0;
+    displayTree(nodeTree: BuildTree, xOffset: number, yOffset: number, curveSize: number): [JSX.Element[], number] {
+        let result: JSX.Element[] = [];
+        let minY: number = 0;
 
-        for (const offset of Object.values(this.state.categoryLevels)) {
-            if (offset < lowest) {
-                lowest = offset;
+        for (const {node, position, originIds} of Object.values(nodeTree)) {
+            minY = position.y < minY ? position.y : minY;
+
+            result.push(
+                <NodeElement
+                    key={node.id}
+                    icon={undefined}
+                    name={node.name}
+                    x={position.x * xOffset}
+                    y={position.y * yOffset}
+                    color={node.color}
+                />
+            );
+            
+            for (const originId of originIds) {
+                if (originId !== -1) {
+                    result.push(
+                        <Connection
+                            key={originId + '-' + node.id}
+                            from={{x: nodeTree[originId].position.x * xOffset, y: nodeTree[originId].position.y * yOffset}}
+                            to={{x: position.x * xOffset, y: position.y * yOffset}}
+                            curveSize={curveSize}
+                            color={nodeTree[originId].node.color}
+                            padding={10}
+                        />
+                    );
+                }
             }
         }
 
-        this.setState({ yOffset: 50 + (lowest * -1) });
+        return [result, minY * -1 * yOffset];
     }
 
     render() {
         return (
-            <svg style={{ height: '100%', width: '100%' }}>
-                <g transform={`translate(50, ${this.state.yOffset})`}>
-                    { this.state.pathsRender }
-                    { this.state.nodesRender }
-                </g>
-            </svg>
+            <div ref={this.elementRef} className='nodeTree' style={{transform: `translate(50px, ${this.state.yPadding + 50}px)`}}>
+                {this.state.innerElements}
+            </div>
         );
     }
 }
-
-export default Tree;

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Tree, InputType } from './client/Tree2';
+import { Tree } from './client/Tree';
 import './App.css';
 import './css/main.css';
+import { InputType } from './client/types';
 
 const DATA: InputType[] = [
   {
@@ -160,7 +161,7 @@ const DATA: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <Tree data={DATA} rootId={0} />
+      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={50} />
     </div>
   );
 }

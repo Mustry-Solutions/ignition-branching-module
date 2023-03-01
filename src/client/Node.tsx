@@ -5,13 +5,10 @@ interface NodeProps {
     name: string;
     x: number;
     y: number;
+    color: string;
 }
 
-interface NodeState {
-
-}
-
-export class NodeElement extends React.Component<NodeProps, NodeState> {
+export class NodeElement extends React.Component<NodeProps, {}> {
     constructor(props: NodeProps) {
         super(props);
     }
@@ -20,7 +17,7 @@ export class NodeElement extends React.Component<NodeProps, NodeState> {
         return (
             <div className='nodeWrapper' style={{left: this.props.x, top: this.props.y}}>
                 <div className='node'>
-                    <div className='iconWrapper'>
+                    <div className='iconWrapper' style={{borderColor: this.props.color, backgroundColor: this.props.color}}>
                         {this.props.icon}
                     </div>
                     
