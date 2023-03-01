@@ -1,0 +1,52 @@
+.nodeTreeWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.nodeTree {
+    position: relative;
+    width: 0;
+    height: 0;
+}
+
+.nodePath {
+    position: absolute;
+    z-index: 0;
+}
+
+.nodeWrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.node {
+    position: relative;
+    background-color: white;
+    padding: 10px;
+}
+
+.node .iconWrapper {
+    width: 20px;
+    height: 20px;
+
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: black;
+}
+
+.icon {
+    width: 100%;
+    height: 100%;
+}
+
+.node .name {
+    margin: 0;
+    margin-top: 0px;
+    padding: 2px;
+    background-color: white;
+    border-radius: 5px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}

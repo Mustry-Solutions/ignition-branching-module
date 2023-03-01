@@ -14,11 +14,11 @@ public class TreeComponents {
                 "tree-components-js",
                 String.format("/res/%s/TreeComponents.js", URL_ALIAS),
                 BrowserResource.ResourceType.JS
+            ),
+            new BrowserResource(
+                "tree-components-css",
+                String.format("/res/%s/TreeComponents.css", URL_ALIAS),
+                BrowserResource.ResourceType.CSS
             )
-            // new BrowserResource(
-            //     "tree-components-css",
-            //     String.format("/res/%s/TreeComponents.css", URL_ALIAS),
-            //     BrowserResource.ResourceType.CSS
-            // )
         );
 }
