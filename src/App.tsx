@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tree } from './client/Tree';
 import './App.css';
+import './css/reset.css'
 import './css/main.css';
 import { InputType } from './client/types';
 

@@ -184,9 +184,12 @@ export class Tree extends React.Component<TreeProps, NodeState> {
 
     render() {
         return (
-            <div ref={this.elementRef} className='nodeTree' style={{transform: `translate(50px, ${this.state.yPadding + 50}px)`}}>
-                {this.state.innerElements}
+            <div ref={this.elementRef} className='nodeTreeWrapper'>
+                <div className='nodeTree' style={{transform: `translate(50px, ${this.state.yPadding + 50}px)`}}>
+                    {this.state.innerElements}
+                </div>
             </div>
+            
         );
     }
 }
