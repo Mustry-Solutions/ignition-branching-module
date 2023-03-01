@@ -7,6 +7,7 @@ interface NodeProps {
     x: number;
     y: number;
     color: string;
+    backgroundColor: string;
     fill: boolean;
 }
 
@@ -18,7 +19,7 @@ export class NodeElement extends React.Component<NodeProps, {}> {
     render() {
         return (
             <div className='nodeWrapper' style={{left: this.props.x, top: this.props.y}}>
-                <div className='node'>
+                <div className='node' style={{backgroundColor: this.props.backgroundColor}}>
                     <div className='iconWrapper' style={{
                         borderColor: this.props.color,
                         backgroundColor: this.props.fill ? this.props.color : 'white',
