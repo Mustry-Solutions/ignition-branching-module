@@ -11,6 +11,7 @@ interface TreeProps {
     curveSize: number;
     lineWidth: number;
     backgroundColor: string;
+    nodeSize: number;
 }
 
 interface NodeState {
@@ -36,7 +37,9 @@ export class Tree extends React.Component<TreeProps, NodeState> {
 
     componentDidMount(): void {
         window.addEventListener('resize', this.handleResize);
-        this.setState({width: this.elementRef.current.offsetWidth});
+        if (this.elementRef.current) {
+            this.setState({width: this.elementRef.current.offsetWidth});
+        }
 
         this.rebuildTree();
     }
@@ -165,6 +168,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                     color={node.color}
                     backgroundColor={this.props.backgroundColor}
                     fill={node.fill}
+                    size={this.props.nodeSize}
                 />
             );
             
