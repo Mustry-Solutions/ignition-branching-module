@@ -6,3 +6,7 @@ build
 bin
 dist
 node_modules
+
+# !!!Ignore certificates and passwords!!!
+certificates
+sign.props
