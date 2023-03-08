@@ -155,7 +155,8 @@ export class Tree extends React.Component<TreeProps, NodeState> {
             result.push(
                 <NodeElement
                     key={node.id}
-                    icon={undefined}
+                    icon={'material/check'}
+                    iconColor='white'
                     name={node.name}
                     x={position.x * xOffset}
                     y={position.y * yOffset}
@@ -174,6 +175,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                             to={{x: position.x * xOffset, y: position.y * yOffset}}
                             curveSize={curveSize}
                             color={nodeTree[originId].node.color}
+                            lineWidth={2}
                             padding={10}
                         />
                     );

@@ -2,7 +2,8 @@ import * as React from 'react';
 import Icon from './Icon';
 
 interface NodeProps {
-    icon: any;
+    icon: string;
+    iconColor: string;
     name: string;
     x: number;
     y: number;
@@ -12,19 +13,15 @@ interface NodeProps {
 }
 
 export class NodeElement extends React.Component<NodeProps, {}> {
-    constructor(props: NodeProps) {
-        super(props);
-    }
-
     render() {
         return (
             <div className='nodeWrapper' style={{left: this.props.x, top: this.props.y}}>
                 <div className='node' style={{backgroundColor: this.props.backgroundColor}}>
                     <div className='iconWrapper' style={{
                         borderColor: this.props.color,
-                        backgroundColor: this.props.fill ? this.props.color : 'white',
+                        backgroundColor: this.props.fill ? this.props.color : this.props.backgroundColor,
                         }}>
-                        <Icon path='material/check' color='white' />
+                        <Icon path={this.props.icon} color={this.props.iconColor} />
                     </div>
                     
                     <p className='name'>{this.props.name}</p>

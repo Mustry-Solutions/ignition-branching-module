@@ -6,6 +6,7 @@ interface ConnectionProps {
     to: Position;
     curveSize: number;
     color: string;
+    lineWidth: number;
     padding: number;
 }
 
@@ -30,19 +31,19 @@ export class Connection extends React.Component<ConnectionProps, {}> {
                     }}>
                 <path d={
                     `M ${step0.x} ${step0.y} L ${step1.x} ${step1.y}`
-                    } stroke={this.props.color} strokeWidth={2} fill='none' />
+                    } stroke={this.props.color} strokeWidth={this.props.lineWidth} fill='none' />
                 <path d={
                     `M ${step1.x} ${step1.y} C ${step1.x} ${step1.y} ${step2.x} ${step1.y} ${step2.x} ${step2.y}`
-                    } stroke={this.props.color} strokeWidth={2} fill='none' />
+                    } stroke={this.props.color} strokeWidth={this.props.lineWidth} fill='none' />
                 <path d={
                     `M ${step2.x} ${step2.y} L ${step3.x} ${step3.y}
-                    `} stroke={this.props.color} strokeWidth={2} fill='none' />
+                    `} stroke={this.props.color} strokeWidth={this.props.lineWidth} fill='none' />
                 <path d={
                     `M ${step3.x} ${step3.y} C ${step3.x} ${step3.y} ${step3.x} ${step4.y} ${step4.x} ${step4.y}
-                    `} stroke={this.props.color} strokeWidth={2} fill='none' />
+                    `} stroke={this.props.color} strokeWidth={this.props.lineWidth} fill='none' />
                 <path d={
                     `M ${step4.x} ${step4.y} L ${step5.x} ${step5.y}`
-                    } stroke={this.props.color} strokeWidth={2} fill='none' />
+                    } stroke={this.props.color} strokeWidth={this.props.lineWidth} fill='none' />
             </svg>
         );
     }

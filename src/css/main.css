@@ -22,7 +22,9 @@
 
 .node {
     position: relative;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 12px;
 }
 
 .node .iconWrapper {
