@@ -58,7 +58,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
 
     rebuildTree(): void {
         const [tree, maxX] = this.buildTree(this.convertInput(this.props.data), this.props.rootId);
-        const xOffset = (this.state.width - 150) / maxX < this.props.minXOffset ? this.props.minXOffset : (this.state.width - 150) / maxX;
+        const xOffset = (this.state.width - 100) / maxX < this.props.minXOffset ? this.props.minXOffset : (this.state.width - 100) / maxX;
 
         const [elements, yPadding] = this.displayTree(tree, xOffset, this.props.yOffset, this.props.curveSize);
 
@@ -169,6 +169,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                     backgroundColor={this.props.backgroundColor}
                     fill={node.fill}
                     size={this.props.nodeSize}
+                    textSpace ={xOffset - 30}
                 />
             );
             

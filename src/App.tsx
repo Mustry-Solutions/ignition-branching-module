@@ -1,14 +1,14 @@
 import React from 'react';
 import { Tree } from './client/Tree';
 import './App.css';
-import './css/reset.css'
+import './css/devcss.css'
 import './css/main.css';
 import { InputType } from './client/types';
 
 const DATA: InputType[] = [
   {
     "color": "#18b918",
-    "name": "Zagen",
+    "name": "Groot zaag departement waar ze verven",
     "id": 0,
     "nextId": [
       1,
@@ -21,7 +21,7 @@ const DATA: InputType[] = [
   },
   {
     "color": "#0A0D27",
-    "name": "Zagen",
+    "name": "Groot zaag departement waar ze verven",
     "id": 1,
     "nextId": [
       2
@@ -162,7 +162,7 @@ const DATA: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={20} lineWidth={2} backgroundColor={'#fafafa'} nodeSize={20} />
+      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={50} lineWidth={2} backgroundColor={'#fafafa'} nodeSize={20} />
     </div>
   );
 }

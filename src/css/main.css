@@ -1,26 +1,41 @@
 .nodeTreeWrapper {
+    margin: 0;
+    padding: 0;
+
     width: 100%;
     height: 100%;
 }
 
 .nodeTree {
+    margin: 0;
+    padding: 0;
+
     position: relative;
     width: 0;
     height: 0;
 }
 
 .nodePath {
+    margin: 0;
+    padding: 0;
+
     position: absolute;
     z-index: 0;
 }
 
 .nodeWrapper {
+    margin: 0;
+    padding: 0;
+
     position: absolute;
     transform: translate(-50%, -50%);
     z-index: 1;
 }
 
 .node {
+    margin: 0;
+    padding: 0;
+
     position: relative;
     padding-left: 10px;
     padding-right: 10px;
@@ -28,6 +43,9 @@
 }
 
 .node .iconWrapper {
+    margin: 0;
+    padding: 0;
+
     width: 20px;
     height: 20px;
 
@@ -37,16 +55,22 @@
 }
 
 .icon {
+    margin: 0;
+    padding: 0;
+
     width: 100%;
     height: 100%;
 }
 
 .node .name {
     margin: 0;
-    margin-top: 0px;
+
+    text-align: center;
+
     padding: 2px;
-    border-radius: 5px;
+    border-radius: 50%;
     position: absolute;
+
     left: 50%;
     transform: translate(-50%, 0);
 }

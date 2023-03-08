@@ -11,6 +11,7 @@ interface NodeProps {
     backgroundColor: string;
     fill: boolean;
     size: number;
+    textSpace: number;
 }
 
 export class NodeElement extends React.Component<NodeProps, {}> {
@@ -27,7 +28,12 @@ export class NodeElement extends React.Component<NodeProps, {}> {
                         <Icon path={this.props.icon} color={this.props.iconColor} />
                     </div>
                     
-                    <p className='name' style={{backgroundColor: this.props.backgroundColor}}>{this.props.name}</p>
+                    <p className='name' style={{
+                        backgroundColor: this.props.backgroundColor,
+                        width: this.props.textSpace
+                        }}>
+                        {this.props.name}
+                    </p>
                 </div>
             </div>
             
