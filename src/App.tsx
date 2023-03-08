@@ -162,7 +162,7 @@ const DATA: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={20} />
+      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={20} lineWidth={2} backgroundColor={'#fafafa'} />
     </div>
   );
 }

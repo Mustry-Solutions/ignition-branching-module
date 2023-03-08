@@ -9,6 +9,8 @@ interface TreeProps {
     minXOffset: number;
     yOffset: number;
     curveSize: number;
+    lineWidth: number;
+    backgroundColor: string;
 }
 
 interface NodeState {
@@ -161,7 +163,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                     x={position.x * xOffset}
                     y={position.y * yOffset}
                     color={node.color}
-                    backgroundColor={'#fafafa'}
+                    backgroundColor={this.props.backgroundColor}
                     fill={node.fill}
                 />
             );
@@ -175,7 +177,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                             to={{x: position.x * xOffset, y: position.y * yOffset}}
                             curveSize={curveSize}
                             color={nodeTree[originId].node.color}
-                            lineWidth={2}
+                            lineWidth={this.props.lineWidth}
                             padding={10}
                         />
                     );
