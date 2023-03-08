@@ -22,7 +22,9 @@
 
 .node {
     position: relative;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 12px;
 }
 
 .node .iconWrapper {
@@ -43,7 +45,6 @@
     margin: 0;
     margin-top: 0px;
     padding: 2px;
-    background-color: white;
     border-radius: 5px;
     position: absolute;
     left: 50%;

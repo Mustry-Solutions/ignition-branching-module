@@ -178,20 +178,32 @@
           "description": "The vertical offset of nodes in pixels.",
           "default": 50
         },
+        "lineWidth": {
+          "type": "number",
+          "description": "The width of the line connecting the nodes in pixels.",
+          "default": 2
+        },
+        "backgroundColor": {
+          "type": "string",
+          "description": "The background color of the component, used because the nodes draw over the node connections.",
+          "default": "white"
+        },
         "curveSize": {
           "type": "number",
           "description": "The size of the curve, must be smaller or equal to half the x and y offset.",
           "default": 10
         },
-        "fontSize": {
-            "type": "string",
-            "description": "Font size of tree labels",
-            "default": "1rem"
+        "nodeSize": {
+          "type": "number",
+          "description": "Width and height of 1 node in pixels.",
+          "default": 20
         },
         "style": {
             "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
             "default": {
-                "classes": ""
+                "classes": "",
+                "font-family": "inherit",
+                "font-size": "inherit"
             }
         }
     }

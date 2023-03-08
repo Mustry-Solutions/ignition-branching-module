@@ -17,6 +17,9 @@ interface TreeProps {
     minXOffset: number;
     yOffset: number;
     curveSize: number;
+    lineWidth: number;
+    backgroundColor: string;
+    nodeSize: number;
 }
 
 interface NodeState {
@@ -27,11 +30,9 @@ interface NodeState {
 }
 
 export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
-    elementRef: React.RefObject<any>;
     constructor(props: ComponentProps<TreeProps>) {
         super(props);
 
-        this.elementRef = React.createRef();
         this.state = {
             yPadding: 0,
             maxWidthElements: 0,
@@ -42,7 +43,11 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
 
     componentDidMount(): void {
         window.addEventListener('resize', this.handleResize);
-        this.setState({width: this.elementRef.current.offsetWidth});
+
+        // props.store.element is instead of using reference in react, this is the way ignition implements it
+        if (this.props.store.element) {
+            this.setState({width: this.props.store.element.getBoundingClientRect().width});
+        }
 
         this.rebuildTree();
     }
@@ -54,8 +59,8 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
     }
 
     handleResize = (): void => {
-        if (this.elementRef.current) {
-            this.setState({width: this.elementRef.current.offsetWidth});
+        if (this.props.store.element) {
+            this.setState({width: this.props.store.element.getBoundingClientRect().width});
         }
     }
 
@@ -163,13 +168,15 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
             result.push(
                 <NodeElement
                     key={node.id}
-                    icon={undefined}
+                    icon={'material/check'}
+                    iconColor='white'
                     name={node.name}
                     x={position.x * xOffset}
                     y={position.y * yOffset}
                     color={node.color}
-                    backgroundColor={'#fafafa'}
+                    backgroundColor={this.props.props.backgroundColor}
                     fill={node.fill}
+                    size={this.props.props.nodeSize}
                 />
             );
             
@@ -182,6 +189,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
                             to={{x: position.x * xOffset, y: position.y * yOffset}}
                             curveSize={curveSize}
                             color={nodeTree[originId].node.color}
+                            lineWidth={this.props.props.lineWidth}
                             padding={10}
                         />
                     );
@@ -194,7 +202,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
 
     render() {
         return (
-            <div ref={this.elementRef} className='nodeTreeWrapper'>
+            <div className='nodeTreeWrapper' {...this.props.emit()}>
                 <div className='nodeTree' style={{transform: `translate(50px, ${this.state.yPadding + 50}px)`}}>
                     {this.state.innerElements}
                 </div>
@@ -227,7 +235,10 @@ export class TreeMeta implements ComponentMeta {
             rootId: propsTree.readNumber('rootId', 0),
             minXOffset: propsTree.readNumber('minXOffset', 50),
             yOffset: propsTree.readNumber('yOffset', 50),
-            curveSize: propsTree.readNumber('curveSize', 10)
+            curveSize: propsTree.readNumber('curveSize', 10),
+            lineWidth: propsTree.readNumber('lineWidth', 2),
+            backgroundColor: propsTree.readString('backgroundColor', 'white'),
+            nodeSize: propsTree.readNumber('nodeSize', 20)
         };
     }
 }
