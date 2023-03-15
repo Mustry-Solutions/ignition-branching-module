@@ -3,7 +3,7 @@ import Connection from './Connection';
 import NodeElement from './Node';
 import { BuildTree, InputType, NodeDict, Position, TreeNode } from './types';
 
-interface TreeProps {
+interface BranchingComponentProps {
     data: InputType[];
     rootId: number;
     minXOffset: number;
@@ -21,9 +21,9 @@ interface NodeState {
     innerElements: JSX.Element[];
 }
 
-export class BranchingComponent extends React.Component<TreeProps, NodeState> {
+export class BranchingComponent extends React.Component<BranchingComponentProps, NodeState> {
     elementRef: React.RefObject<any>;
-    constructor(props: TreeProps) {
+    constructor(props: BranchingComponentProps) {
         super(props);
 
         this.elementRef = React.createRef();
@@ -44,7 +44,7 @@ export class BranchingComponent extends React.Component<TreeProps, NodeState> {
         this.rebuildTree();
     }
 
-    componentDidUpdate(prevProps: Readonly<TreeProps>, prevState: Readonly<NodeState>, snapshot?: any): void {
+    componentDidUpdate(prevProps: Readonly<BranchingComponentProps>, prevState: Readonly<NodeState>, snapshot?: any): void {
         if (this.props !== prevProps || prevState.width !== this.state.width) {
             this.rebuildTree();
         }
@@ -73,7 +73,8 @@ export class BranchingComponent extends React.Component<TreeProps, NodeState> {
                 color: node.color,
                 children: node.nextId ? node.nextId : [],
                 category: node.category,
-                fill: node.fill
+                fill: node.fill,
+                style: node.style
             }, obj
         ), {});
     }
@@ -169,7 +170,8 @@ export class BranchingComponent extends React.Component<TreeProps, NodeState> {
                     backgroundColor={this.props.backgroundColor}
                     fill={node.fill}
                     size={this.props.nodeSize}
-                    textSpace ={xOffset - 30}
+                    textSpace={xOffset - 30}
+                    styleEmit={node.style}
                 />
             );
             
