@@ -1,3 +1,6 @@
+// import java.util.Date
+// import java.text.SimpleDateFormat
+
 plugins {
     base
     // the ignition module plugin: https://github.com/inductiveautomation/ignition-module-tools
@@ -5,8 +8,10 @@ plugins {
     id("org.barfuin.gradle.taskinfo") version "1.3.0"
 }
 
+// var timestamp = SimpleDateFormat("yyyyMMddHH").format(Date())
+
 allprojects {
-    version = "0.0.2"
+    version = "0.0.3"
     group = "org.mustry"
 }
 
@@ -20,6 +25,8 @@ ignitionModule {
     moduleVersion.set("${project.version}")
     moduleDescription.set("A compilation of components made by Mustry Solutions.")
     requiredIgnitionVersion.set("8.1.8")
+
+    freeModule.set(true)
 
     // If we depend on other module being loaded/available, then we specify IDs of the module we depend on,
     // and specify the Ignition Scope that applies. "G" for gateway, "D" for designer, "C" for VISION client
