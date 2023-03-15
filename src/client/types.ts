@@ -1,19 +1,19 @@
 export interface InputType {
     id: number;
-    name: string;
-    color: string;
-    nextId: Array<number>;
+    name?: string;
+    color?: string;
+    nextId?: number[];
     category: string;
-    fill: boolean;
+    fill?: boolean;
 }
 
 export interface TreeNode {
     id: number;
-    name: string;
-    color: string;
-    children: Array<number>;
+    name?: string;
+    color?: string;
+    children: number[];
     category: string;
-    fill: boolean;
+    fill?: boolean;
 }
 
 export interface NodeDict {

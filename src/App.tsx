@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tree } from './client/Tree';
+import { BranchingComponent } from './client/BranchingComponent';
 import './App.css';
 import './css/devcss.css'
 import './css/main.css';
@@ -26,8 +26,7 @@ const DATA: InputType[] = [
     "nextId": [
       2
     ],
-    "category": "1",
-    "fill": true
+    "category": "1"
   },
   {
     "color": "#0A0D27",
@@ -36,8 +35,7 @@ const DATA: InputType[] = [
     "nextId": [
       3
     ],
-    "category": "1",
-    "fill": false
+    "category": "1"
   },
   {
     "color": "#0A0D27",
@@ -151,9 +149,7 @@ const DATA: InputType[] = [
   },
   {
     "color": "#0A0D27",
-    "name": "Zagen",
     "id": 11,
-    "nextId": [],
     "category": "0",
     "fill": false
   }
@@ -162,7 +158,7 @@ const DATA: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <Tree data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={50} lineWidth={2} backgroundColor={'#fafafa'} nodeSize={20} />
+      <BranchingComponent data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={20} />
     </div>
   );
 }

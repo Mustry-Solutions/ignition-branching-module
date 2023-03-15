@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Connection } from './Connection';
-import { NodeElement } from './Node';
+import Connection from './Connection';
+import NodeElement from './Node';
 import { BuildTree, InputType, NodeDict, Position, TreeNode } from './types';
 
 interface TreeProps {
@@ -8,10 +8,10 @@ interface TreeProps {
     rootId: number;
     minXOffset: number;
     yOffset: number;
-    curveSize: number;
-    lineWidth: number;
-    backgroundColor: string;
-    nodeSize: number;
+    curveSize?: number;
+    lineWidth?: number;
+    backgroundColor?: string;
+    nodeSize?: number;
 }
 
 interface NodeState {
@@ -21,7 +21,7 @@ interface NodeState {
     innerElements: JSX.Element[];
 }
 
-export class Tree extends React.Component<TreeProps, NodeState> {
+export class BranchingComponent extends React.Component<TreeProps, NodeState> {
     elementRef: React.RefObject<any>;
     constructor(props: TreeProps) {
         super(props);
@@ -71,7 +71,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
                 id: node.id,
                 name: node.name,
                 color: node.color,
-                children: node.nextId,
+                children: node.nextId ? node.nextId : [],
                 category: node.category,
                 fill: node.fill
             }, obj
@@ -150,7 +150,7 @@ export class Tree extends React.Component<TreeProps, NodeState> {
         return [result, maxX];
     }
 
-    displayTree(nodeTree: BuildTree, xOffset: number, yOffset: number, curveSize: number): [JSX.Element[], number] {
+    displayTree(nodeTree: BuildTree, xOffset: number, yOffset: number, curveSize: number | undefined): [JSX.Element[], number] {
         let result: JSX.Element[] = [];
         let minY: number = 0;
 

@@ -2,41 +2,52 @@ import * as React from 'react';
 import Icon from './Icon';
 
 interface NodeProps {
-    icon: string;
-    iconColor: string;
-    name: string;
+    icon?: string;
+    iconColor?: string;
+    name?: string;
     x: number;
     y: number;
-    color: string;
-    backgroundColor: string;
-    fill: boolean;
-    size: number;
+    color?: string;
+    backgroundColor?: string;
+    fill?: boolean;
+    size?: number;
     textSpace: number;
 }
 
-export class NodeElement extends React.Component<NodeProps, {}> {
-    render() {
-        return (
-            <div className='nodeWrapper' style={{left: this.props.x, top: this.props.y}}>
-                <div className='node' style={{backgroundColor: this.props.backgroundColor}}>
-                    <div className='iconWrapper' style={{
-                        borderColor: this.props.color,
-                        backgroundColor: this.props.fill ? this.props.color : this.props.backgroundColor,
-                        width: this.props.size,
-                        height: this.props.size
-                        }}>
-                        <Icon path={this.props.icon} color={this.props.iconColor} />
-                    </div>
-                    
-                    <p className='name' style={{
-                        backgroundColor: this.props.backgroundColor,
-                        width: this.props.textSpace
-                        }}>
-                        {this.props.name}
-                    </p>
+const NodeElement = ({
+    icon,
+    iconColor = '#ffffff',
+    name = '',
+    x,
+    y,
+    color = '#000000',
+    backgroundColor = '#ffffff',
+    fill = true,
+    size = 20,
+    textSpace
+}: NodeProps) => {
+    return (
+        <div className='nodeWrapper' style={{left: x, top: y}}>
+            <div className='node' style={{backgroundColor: backgroundColor}}>
+            <div className='iconWrapper' style={{
+                    borderColor: color,
+                    backgroundColor: fill ? color : backgroundColor,
+                    width: size,
+                    height: size
+                }}>
+                    {
+                        icon && <Icon path={icon} color={iconColor} />
+                    }
                 </div>
+                
+                <p className='name' style={{
+                    width: textSpace
+                }}>
+                    {name}
+                </p>
             </div>
-            
-        );
-    }
+        </div>
+    );
 }
+
+export default NodeElement;
