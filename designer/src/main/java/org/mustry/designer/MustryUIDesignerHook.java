@@ -8,21 +8,21 @@ import com.inductiveautomation.ignition.designer.model.DesignerContext;
 import com.inductiveautomation.perspective.designer.DesignerComponentRegistry;
 import com.inductiveautomation.perspective.designer.api.ComponentDesignDelegateRegistry;
 import com.inductiveautomation.perspective.designer.api.PerspectiveDesignerInterface;
-import org.mustry.common.component.display.Tree;
+import org.mustry.common.component.display.BranchingComponent;
 
-public class TreeDesignerHook extends AbstractDesignerModuleHook {
-    private static final LoggerEx logger = LoggerEx.newBuilder().build("TreeComponents");
+public class MustryUIDesignerHook extends AbstractDesignerModuleHook {
+    private static final LoggerEx logger = LoggerEx.newBuilder().build("Mustry UI Components");
 
     private DesignerContext context;
     private DesignerComponentRegistry registry;
     private ComponentDesignDelegateRegistry delegateRegistry;
 
     static {
-        BundleUtil.get().addBundle("treecomponents", TreeDesignerHook.class.getClassLoader(), "treecomponents");
+        BundleUtil.get().addBundle("mustryuicomponents", MustryUIDesignerHook.class.getClassLoader(), "mustryuicomponents");
     }
 
-    public TreeDesignerHook() {
-        logger.info("Registering Tree Components in Designer");
+    public MustryUIDesignerHook() {
+        logger.info("Registering Mustry UI Components in Designer");
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TreeDesignerHook extends AbstractDesignerModuleHook {
         delegateRegistry = pdi.getComponentDesignDelegateRegistry();
 
         // register components to get them on the palette
-        registry.registerComponent(Tree.DESCRIPTOR);
+        registry.registerComponent(BranchingComponent.DESCRIPTOR);
     }
 
 
@@ -50,6 +50,6 @@ public class TreeDesignerHook extends AbstractDesignerModuleHook {
     }
 
     private void removeComponents() {
-        registry.removeComponent(Tree.COMPONENT_ID);
+        registry.removeComponent(BranchingComponent.COMPONENT_ID);
     }
 }

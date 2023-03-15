@@ -12,13 +12,13 @@ allprojects {
 
 ignitionModule {
     // name of the .modl file to build
-    fileName.set("TreeComponents")
+    fileName.set("Mustry_UI")
 
     // module xml configuration
-    name.set("TreeComponents")
-    id.set("org.mustry.treecomponents")
+    name.set("Mustry UI")
+    id.set("org.mustry.mustryui")
     moduleVersion.set("${project.version}")
-    moduleDescription.set("Description.")
+    moduleDescription.set("A compilation of components made by Mustry Solutions.")
     requiredIgnitionVersion.set("8.1.8")
 
     // If we depend on other module being loaded/available, then we specify IDs of the module we depend on,
@@ -42,8 +42,8 @@ ignitionModule {
     // Ignition which classes should be loaded in a given scope.
     hooks.putAll(
         mapOf(
-            "org.mustry.gateway.TreeGatewayHook" to "G",
-            "org.mustry.designer.TreeDesignerHook" to "D"
+            "org.mustry.gateway.MustryUIGatewayHook" to "G",
+            "org.mustry.designer.MustryUIDesignerHook" to "D"
         )
     )
 
@@ -51,7 +51,7 @@ ignitionModule {
      * Optional unsigned modl settings. If true, modl signing will be skipped. This is not for production and should
      * be used merely for development testing
      */
-    skipModlSigning.set(true)
+    skipModlSigning.set(false)
 }
 
 val deepClean by tasks.registering {

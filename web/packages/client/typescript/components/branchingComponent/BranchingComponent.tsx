@@ -8,18 +8,18 @@ import {
     SizeObject
 } from '@inductiveautomation/perspective-client';
 import { InputType, TreeNode, NodeDict, Position, BuildTree } from './types';
-import { NodeElement } from './Node';
-import { Connection } from './Connection';
+import NodeElement from './Node';
+import Connection from './Connection';
 
-interface TreeProps {
+interface BranchingComponentProps {
     data: InputType[];
     rootId: number;
     minXOffset: number;
     yOffset: number;
-    curveSize: number;
-    lineWidth: number;
-    backgroundColor: string;
-    nodeSize: number;
+    curveSize?: number;
+    lineWidth?: number;
+    backgroundColor?: string;
+    nodeSize?: number;
 }
 
 interface NodeState {
@@ -29,8 +29,8 @@ interface NodeState {
     innerElements: JSX.Element[];
 }
 
-export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
-    constructor(props: ComponentProps<TreeProps>) {
+export class BranchingComponent extends Component<ComponentProps<BranchingComponentProps>, NodeState> {
+    constructor(props: ComponentProps<BranchingComponentProps>) {
         super(props);
 
         this.state = {
@@ -52,7 +52,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
         this.rebuildTree();
     }
 
-    componentDidUpdate(prevProps: Readonly<ComponentProps<TreeProps>>, prevState: Readonly<NodeState>, snapshot?: any): void {
+    componentDidUpdate(prevProps: Readonly<ComponentProps<BranchingComponentProps>>, prevState: Readonly<NodeState>, snapshot?: any): void {
         if (this.props.props !== prevProps.props || prevState.width !== this.state.width) {
             this.rebuildTree();
         }
@@ -79,7 +79,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
                 id: node.id,
                 name: node.name,
                 color: node.color,
-                children: node.nextId,
+                children: node.nextId ? node.nextId : [],
                 category: node.category,
                 fill: node.fill
             }, obj
@@ -158,7 +158,7 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
         return [result, maxX];
     }
 
-    displayTree(nodeTree: BuildTree, xOffset: number, yOffset: number, curveSize: number): [JSX.Element[], number] {
+    displayTree(nodeTree: BuildTree, xOffset: number, yOffset: number, curveSize: number | undefined): [JSX.Element[], number] {
         let result: JSX.Element[] = [];
         let minY: number = 0;
 
@@ -212,15 +212,15 @@ export class Tree extends Component<ComponentProps<TreeProps>, NodeState> {
     }
 }
 
-export const COMPONENT_TYPE = 'trees.display.tree';
+export const COMPONENT_TYPE = 'mustryui.display.branching';
 
-export class TreeMeta implements ComponentMeta {
+export class BranchingComponentMeta implements ComponentMeta {
     getComponentType(): string {
         return COMPONENT_TYPE;
     }
 
     getViewComponent(): PComponent {
-        return Tree;
+        return BranchingComponent;
     }
 
     getDefaultSize(): SizeObject {
@@ -230,7 +230,7 @@ export class TreeMeta implements ComponentMeta {
         });
     }
 
-    getPropsReducer(propsTree: PropertyTree): TreeProps {
+    getPropsReducer(propsTree: PropertyTree): BranchingComponentProps {
         return {
             data: propsTree.readArray('data', []),
             rootId: propsTree.readNumber('rootId', 0),

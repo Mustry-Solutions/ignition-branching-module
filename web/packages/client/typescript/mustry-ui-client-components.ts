@@ -1,14 +1,14 @@
 import { ComponentMeta, ComponentRegistry } from '@inductiveautomation/perspective-client';
-import { Tree, TreeMeta } from './components/Tree';
+import { BranchingComponent, BranchingComponentMeta } from './components/branchingComponent/BranchingComponent';
 
 // export so the components are referencable, e.g. `RadComponents['Image']
-export { Tree };
+export { BranchingComponent };
 
 import '../scss/main'
 
 // as new components are implemented, import them, and add their meta to this array
 const components: Array<ComponentMeta> = [
-    new TreeMeta()
+    new BranchingComponentMeta()
 ];
 
 // iterate through our components, registering each one with the registry.  Don't forget to register on the Java side too!

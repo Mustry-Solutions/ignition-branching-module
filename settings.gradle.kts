@@ -41,7 +41,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Basic_ignition_component"
+rootProject.name = "Mustry_UI"
 
 // link up our subprojects as part of this multi-project build.  Add/remove subprojects gradle path notation.
 include(":common", ":gateway", ":designer", ":web")
