@@ -1,21 +1,17 @@
 import * as React from 'react';
+import { IconRenderer } from '@inductiveautomation/perspective-client'
 
 interface IconProps {
     path: string;
     color: string;
 }
 
-export default class Icon extends React.Component<IconProps, {}> {
-    render() {
-        //const svgFile = this.props.path.split('/')[0];
-        // const svgId = this.props.path.split('/')[1];
-        // const iconSheet = require('../icons/material.svg').default;
-
-        return (
-            <div className='icon' style={{
-                //maskImage: `url(${iconSheet}#${svgId})`,
-                // backgroundColor: this.props.color
-            }}></div>
-        );
-    }
+const Icon = ({path, color}: IconProps) => {
+    return (
+        <div className='icon'>
+            <IconRenderer color={color} path={path} />
+        </div>
+    );
 }
+
+export default Icon;

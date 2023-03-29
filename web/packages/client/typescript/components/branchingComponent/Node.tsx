@@ -12,6 +12,7 @@ interface NodeProps {
     fill?: boolean;
     size?: number;
     textSpace: number;
+    styleEmit?: Object;
 }
 
 const NodeElement = ({
@@ -24,10 +25,11 @@ const NodeElement = ({
     backgroundColor = '#ffffff',
     fill = true,
     size = 20,
-    textSpace
+    textSpace,
+    styleEmit = {}
 }: NodeProps) => {
     return (
-        <div className='nodeWrapper' style={{left: x, top: y}}>
+        <div className='nodeWrapper' style={{left: x, top: y, ...styleEmit}}>
             <div className='node' style={{backgroundColor: backgroundColor}}>
             <div className='iconWrapper' style={{
                     borderColor: color,

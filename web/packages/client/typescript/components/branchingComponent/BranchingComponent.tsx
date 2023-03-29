@@ -81,7 +81,9 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 color: node.color,
                 children: node.nextId ? node.nextId : [],
                 category: node.category,
-                fill: node.fill
+                fill: node.fill,
+                icon: node.icon,
+                style: node.style
             }, obj
         ), {});
     }
@@ -168,8 +170,8 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
             result.push(
                 <NodeElement
                     key={node.id}
-                    icon={'material/check'}
-                    iconColor='white'
+                    icon={node.icon?.path}
+                    iconColor={node.icon?.color}
                     name={node.name}
                     x={position.x * xOffset}
                     y={position.y * yOffset}
@@ -178,6 +180,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                     fill={node.fill}
                     size={this.props.props.nodeSize}
                     textSpace={xOffset - 30}
+                    styleEmit={node.style}
                 />
             );
             

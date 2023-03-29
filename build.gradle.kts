@@ -1,5 +1,5 @@
-// import java.util.Date
-// import java.text.SimpleDateFormat
+import java.util.Date
+import java.text.SimpleDateFormat
 
 plugins {
     base
@@ -8,10 +8,10 @@ plugins {
     id("org.barfuin.gradle.taskinfo") version "1.3.0"
 }
 
-// var timestamp = SimpleDateFormat("yyyyMMddHH").format(Date())
+var timestamp = SimpleDateFormat("yyyyMMddHH").format(Date())
 
 allprojects {
-    version = "0.0.3"
+    version = "0.0.4"
     group = "org.mustry"
 }
 
@@ -22,7 +22,7 @@ ignitionModule {
     // module xml configuration
     name.set("Mustry UI")
     id.set("org.mustry.mustryui")
-    moduleVersion.set("${project.version}")
+    moduleVersion.set("${project.version}.${timestamp}")
     moduleDescription.set("A compilation of components made by Mustry Solutions.")
     requiredIgnitionVersion.set("8.1.8")
 
