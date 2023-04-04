@@ -1,8 +1,14 @@
 package org.mustry.common.component.display;
 
+import com.inductiveautomation.ignition.common.gson.JsonParser;
 import com.inductiveautomation.ignition.common.jsonschema.JsonSchema;
 import com.inductiveautomation.perspective.common.api.ComponentDescriptor;
 import com.inductiveautomation.perspective.common.api.ComponentDescriptorImpl;
+
+import java.io.InputStreamReader;
+
+import javax.swing.ImageIcon;
+
 import org.mustry.common.MustryUIComponents;
 
 
@@ -32,7 +38,9 @@ public class BranchingComponent  {
         .setModuleId(MustryUIComponents.MODULE_ID)
         .setSchema(SCHEMA) //  this could alternatively be created purely in Java if desired
         .setName("Branching Component")
+        .setIcon(new ImageIcon(MustryUIComponents.class.getResource("/icons/Logo_Small.png")))
         .addPaletteEntry("", "Branching Component", "A component to display a branching path", null, null)
+        .addPaletteEntry("example", "Branching Component Example", "An example of how to use the branching component", null, (new JsonParser()).parse(new InputStreamReader(MustryUIComponents.class.getResourceAsStream("/variants/branching_component.example.props.json"))).getAsJsonObject())
         .setDefaultMetaName("Branching Component")
         .setResources(MustryUIComponents.BROWSER_RESOURCES)
         .build();

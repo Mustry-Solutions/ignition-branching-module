@@ -18,6 +18,7 @@ interface BranchingComponentProps {
     yOffset: number;
     curveSize?: number;
     lineWidth?: number;
+    connectionColor?: string;
     backgroundColor?: string;
     nodeSize?: number;
 }
@@ -46,7 +47,10 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
 
         // props.store.element is instead of using reference in react, this is the way ignition implements it
         if (this.props.store.element) {
-            this.setState({width: this.props.store.element.getBoundingClientRect().width});
+            const nodeTreeWrapper = this.props.store.element.querySelector('.nodeTreeWrapper')
+            if (nodeTreeWrapper) {
+                this.setState({width: nodeTreeWrapper.getBoundingClientRect().width});
+            }
         }
 
         this.rebuildTree();
@@ -58,17 +62,23 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
         }
     }
 
-    handleResize = (): void => {
+    handleResize = (): void => {        
         if (this.props.store.element) {
-            this.setState({width: this.props.store.element.getBoundingClientRect().width});
+            const nodeTreeWrapper = this.props.store.element.querySelector('.nodeTreeWrapper')
+            if (nodeTreeWrapper) {
+                this.setState({width: nodeTreeWrapper.getBoundingClientRect().width});
+            }
         }
     }
 
     rebuildTree(): void {
         const [tree, maxX] = this.buildTree(this.convertInput(this.props.props.data), this.props.props.rootId);
-        const xOffset = (this.state.width - 100) / maxX < this.props.props.minXOffset ? this.props.props.minXOffset : (this.state.width - 100) / maxX;
+        const nodeSize = this.props.props.nodeSize ? this.props.props.nodeSize : 20;
+        let xOffset = (this.state.width - nodeSize) / maxX;
+        xOffset = xOffset < this.props.props.minXOffset ? this.props.props.minXOffset : xOffset;
 
         const [elements, yPadding] = this.displayTree(tree, xOffset, this.props.props.yOffset, this.props.props.curveSize);
+        
 
         this.setState({yPadding, maxWidthElements: maxX, innerElements: elements});
     }
@@ -82,6 +92,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 children: node.nextId ? node.nextId : [],
                 category: node.category,
                 fill: node.fill,
+                colorOutgoing: node.colorOutgoing,
                 icon: node.icon,
                 style: node.style
             }, obj
@@ -89,6 +100,10 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
     }
 
     buildTree(nodes: NodeDict, rootId: number): [BuildTree, number] {
+        if (Object.keys(nodes).length === 0) {
+            return [{}, 0];
+        }
+
         let result: BuildTree = {};
         let buffer: [TreeNode, Position, number][] = [[nodes[rootId], {x: 0, y: 0}, -1]];
         let inBuffer: Set<number> = new Set();
@@ -192,7 +207,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                             from={{x: nodeTree[originId].position.x * xOffset, y: nodeTree[originId].position.y * yOffset}}
                             to={{x: position.x * xOffset, y: position.y * yOffset}}
                             curveSize={curveSize}
-                            color={nodeTree[originId].node.color}
+                            color={nodeTree[originId].node.colorOutgoing ? nodeTree[originId].node.color : this.props.props.connectionColor}
                             lineWidth={this.props.props.lineWidth}
                             padding={10}
                         />
@@ -205,10 +220,17 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
     }
 
     render() {
+        const nodeDisposition = this.props.nodeSize ? this.props.nodeSize / 2 : 10;
+
+        const emitter = this.props.emit();
+        emitter.style['min-width'] = `${this.state.maxWidthElements * this.props.props.minXOffset}px`;
+        emitter.class = emitter.class ? emitter.class + ' nodeTreeWrapperWrapper' : 'nodeTreeWrapperWrapper';
         return (
-            <div className='nodeTreeWrapper' {...this.props.emit()}>
-                <div className='nodeTree' style={{transform: `translate(50px, ${this.state.yPadding + 50}px)`}}>
-                    {this.state.innerElements}
+            <div {...emitter}>
+                <div className='nodeTreeWrapper'>
+                    <div className='nodeTree' style={{transform: `translate(${nodeDisposition}px, ${this.state.yPadding + nodeDisposition}px)`}}>
+                        {this.state.innerElements}
+                    </div>
                 </div>
             </div>
         );
@@ -241,6 +263,7 @@ export class BranchingComponentMeta implements ComponentMeta {
             yOffset: propsTree.readNumber('yOffset', 50),
             curveSize: propsTree.readNumber('curveSize', 10),
             lineWidth: propsTree.readNumber('lineWidth', 2),
+            connectionColor: propsTree.readString('connectionColor', 'black'),
             backgroundColor: propsTree.readString('backgroundColor', 'white'),
             nodeSize: propsTree.readNumber('nodeSize', 20)
         };

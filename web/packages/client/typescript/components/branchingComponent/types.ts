@@ -5,6 +5,7 @@ export interface InputType {
     nextId?: number[];
     category: string;
     fill?: boolean;
+    colorOutgoing?: boolean;
     icon?: { path: string, color?: string }
     style?: Object;
 }
@@ -16,6 +17,7 @@ export interface TreeNode {
     children: number[];
     category: string;
     fill?: boolean;
+    colorOutgoing?: boolean;
     icon?: { path: string, color?: string }
     style?: Object;
 }
