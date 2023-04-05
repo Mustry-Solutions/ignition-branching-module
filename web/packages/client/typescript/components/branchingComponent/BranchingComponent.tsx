@@ -224,7 +224,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
 
         const emitter = this.props.emit();
         emitter.style['min-width'] = `${this.state.maxWidthElements * this.props.props.minXOffset}px`;
-        emitter.class = emitter.class ? emitter.class + ' nodeTreeWrapperWrapper' : 'nodeTreeWrapperWrapper';
+        emitter.className = emitter.className ? emitter.className + ' nodeTreeWrapperWrapper' : 'nodeTreeWrapperWrapper';
         return (
             <div {...emitter}>
                 <div className='nodeTreeWrapper'>
