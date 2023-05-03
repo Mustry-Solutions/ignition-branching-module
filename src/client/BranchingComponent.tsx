@@ -171,7 +171,7 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
         }
 
         // check wether connection can be drawn in the middle
-        for (let {node, position, origins} of Object.values(result)) {
+        for (let { position, origins } of Object.values(result)) {
             let minNodeSplit = position.x - 1;
             while (minNodeSplit > 0 && levels[position.y][minNodeSplit] === undefined) {
                 minNodeSplit--;
