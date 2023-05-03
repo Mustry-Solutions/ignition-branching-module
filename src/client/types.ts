@@ -29,6 +29,8 @@ export interface Position {
 
 export interface BuildTree {
     [id: number]: {
-        node: TreeNode, position: Position, originIds: number[]
+        node: TreeNode,
+        position: Position,
+        origins: { id: number, split: [number, number] }[]
     }
 }

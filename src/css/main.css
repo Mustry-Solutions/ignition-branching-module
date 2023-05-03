@@ -1,3 +1,7 @@
+.nodeTreeWrapperWrapper {
+    box-sizing: content-box;
+}
+
 .nodeTreeWrapper {
     margin: 0;
     padding: 0;
@@ -48,6 +52,7 @@
 
     width: 20px;
     height: 20px;
+    z-index: 2;
 
     border: 2px solid black;
     border-radius: 20px;
@@ -72,4 +77,5 @@
 
     left: 50%;
     transform: translate(-50%, 0);
+    max-width: 200px;
 }

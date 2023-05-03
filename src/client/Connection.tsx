@@ -3,7 +3,9 @@ import { Position } from './types';
 
 interface ConnectionProps {
     from: Position;
+    fromSplitPoint?: number;
     to: Position;
+    toSplitPoint?: number;
     curveSize?: number;
     color?: string;
     lineWidth?: number;
@@ -13,6 +15,8 @@ interface ConnectionProps {
 const Connection = ({
     from,
     to,
+    fromSplitPoint = (to.x - from.x) / 2,
+    toSplitPoint = (to.x - from.x) / 2,
     curveSize = 0,
     color = '#000000',
     lineWidth = 2,
@@ -21,11 +25,13 @@ const Connection = ({
     const margin: number = padding / 2;
     const curveStep: number = from.y === to.y ? 0 : curveSize;
 
-    const step0: Position = {x: margin, y: from.y < to.y ? margin : from.y - to.y + margin};
-    const step1: Position = {x: step0.x + (to.x - from.x) / 2 - curveStep, y: step0.y};
-    const step2: Position = {x: step1.x + curveStep, y: from.y < to.y ? step1.y + curveStep : step1.y - curveStep};
-    const step3: Position = {x: step2.x, y: from.y < to.y ? to.y - from.y + margin - curveStep : margin + curveStep};
-    const step4: Position = {x: step3.x + curveStep, y: from.y < to.y ? step3.y + curveStep : step3.y - curveStep};
+    const fromHigher = from.y < to.y;
+
+    const step0: Position = {x: margin, y: fromHigher ? margin : from.y - to.y + margin};
+    const step1: Position = {x: step0.x + fromSplitPoint - curveStep, y: step0.y};
+    const step2: Position = {x: step1.x + curveStep, y: fromHigher ? step1.y + curveStep : step1.y - curveStep};
+    const step3: Position = {x: toSplitPoint + margin, y: fromHigher ? to.y - from.y + margin - curveStep : margin + curveStep};
+    const step4: Position = {x: step3.x + curveStep, y: fromHigher ? step3.y + curveStep : step3.y - curveStep};
     const step5: Position = {x: to.x - from.x + margin, y: step4.y};
 
     return (

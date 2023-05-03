@@ -5,7 +5,175 @@ import './css/devcss.css'
 import './css/main.css';
 import { InputType } from './client/types';
 
-const DATA: InputType[] = [
+const DATA0: InputType[] = [
+  {
+    "color": "#00ff00",
+    "name": "node1",
+    "id": 0,
+    "nextId": [
+      2,
+      3
+    ],
+    "fill": false,
+    "category": "0"
+  },
+  {
+    "nextId": [
+      4
+    ],
+    "color": "#ff0000",
+    "name": "node2",
+    "id": 2,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node3",
+    "id": 3,
+    "category": "2",
+    "fill": false
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node4",
+    "id": 4,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [],
+    "color": "#ff0000",
+    "name": "node5",
+    "id": 5,
+    "category": "0",
+    "fill": false
+  }
+]
+
+const DATA1: InputType[] = [
+  {
+    "color": "#00ff00",
+    "name": "node1",
+    "id": 0,
+    "nextId": [
+      2,
+      3
+    ],
+    "fill": false,
+    "category": "0"
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node2",
+    "id": 2,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [
+      4,
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node3",
+    "id": 3,
+    "category": "2",
+    "fill": false
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node4",
+    "id": 4,
+    "category": "2",
+    "fill": false
+  },
+  {
+    "nextId": [],
+    "color": "#ff0000",
+    "name": "node5",
+    "id": 5,
+    "category": "0",
+    "fill": false
+  }
+]
+
+const DATA2: InputType[] = [
+  {
+    "color": "#00ff00",
+    "name": "node1",
+    "id": 0,
+    "nextId": [
+      2,
+      3
+    ],
+    "fill": false,
+    "category": "0"
+  },
+  {
+    "nextId": [
+      4
+    ],
+    "color": "#ff0000",
+    "name": "node2",
+    "id": 2,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [
+      6,
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node3",
+    "id": 3,
+    "category": "2",
+    "fill": false
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node4",
+    "id": 4,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [],
+    "color": "#ff0000",
+    "name": "node5",
+    "id": 5,
+    "category": "0",
+    "fill": false
+  },
+  {
+    "nextId": [
+      5
+    ],
+    "color": "#ff0000",
+    "name": "node6",
+    "id": 6,
+    "category": "2",
+    "fill": false
+  }
+]
+
+const DATA3: InputType[] = [
   {
     "color": "#18b918",
     "name": "Are you a horse?",
@@ -167,7 +335,7 @@ const DATA: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <BranchingComponent data={DATA} rootId={0} minXOffset={100} yOffset={100} curveSize={20} />
+      <BranchingComponent data={DATA0} rootId={0} minXOffset={100} yOffset={100} curveSize={20} />
     </div>
   );
 }
