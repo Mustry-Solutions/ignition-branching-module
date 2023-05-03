@@ -11,7 +11,7 @@ plugins {
 var timestamp = SimpleDateFormat("yyyyMMddHH").format(Date())
 
 allprojects {
-    version = "1.0.1"
+    version = "1.0.2"
     group = "org.mustry"
 }
 

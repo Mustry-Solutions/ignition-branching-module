@@ -109,11 +109,13 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
         let inBuffer: Set<number> = new Set();
         inBuffer.add(rootId);
         let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
-        let level: number = 0;
+        let prevLevel: number = 0;
         let categoryLevels: { [ category: string ]: number } = {};
         categoryLevels[nodes[rootId].category] = 0;
+        let levels: { [ level: number ]: (number | undefined)[] } = { 0: [] };
         let maxX: number = 0;
 
+        // BFS of all nodes starting with the root
         while (buffer.length > 0) {
             const [node, position, originId] = buffer.shift()!;
 
@@ -123,12 +125,13 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 }
                 else {
                     if (!(nodes[childId].category in categoryLevels)) {
-                        level *= -1;
-                        if (level <= 0) {
-                            level--;
+                        prevLevel *= -1;
+                        if (prevLevel <= 0) {
+                            prevLevel--;
                         }
 
-                        categoryLevels[nodes[childId].category] = level;
+                        categoryLevels[nodes[childId].category] = prevLevel;
+                        levels[prevLevel] = [];
                     }
 
                     buffer.push([
@@ -142,13 +145,17 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
 
                     inBuffer.add(childId);
                 }
+
+                levels[position.y][position.x] = node.id;
             }
 
+            
+
             maxX = position.x > maxX ? position.x : maxX;
-            result[node.id] = { node, position, originIds: [originId] };
+            result[node.id] = { node, position, origins: originId === -1 ? [] : [{ id: originId, split: [ 0, 0 ] }] };
         }
         
-
+        // loop over all duplicates while pushing forward nodes if neccessary
         for (const [duplicateId, originId] of duplicateOrigins) {
             if (result[originId].position.x >= result[duplicateId].position.x) {
                 let behind = result[originId].position.x - result[duplicateId].position.x + 1;
@@ -160,8 +167,17 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                     const nodeId: number = forwarBuffer.shift()!;
 
                     if (!forwarded.has(nodeId)) {
+                        // remove forwarding node from levels tree
+                        if (levels[result[nodeId].position.y][result[nodeId].position.x] === nodeId) {
+                            levels[result[nodeId].position.y][result[nodeId].position.x] = undefined;
+                        }
+
+                        // add x value that node is behind
                         result[nodeId].position.x += behind;
                         maxX = result[nodeId].position.x > maxX ? result[nodeId].position.x : maxX;
+
+                        // add back with new coords
+                        levels[result[nodeId].position.y][result[nodeId].position.x] = nodeId;
 
                         forwarBuffer.push(...result[nodeId].node.children);
                         forwarded.add(nodeId);
@@ -169,7 +185,51 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 }
             }
 
-            result[duplicateId].originIds.push(originId);
+            result[duplicateId].origins.push({id: originId, split: [0, 0]});
+        }
+
+        // check wether connection can be drawn in the middle
+        for (let { position, origins } of Object.values(result)) {
+            let minNodeSplit = position.x - 1;
+            while (minNodeSplit > 0 && levels[position.y][minNodeSplit] === undefined) {
+                minNodeSplit--;
+            }
+
+            for (let origin of origins) {
+                if (origin.id === 3) {
+                    console.log(1, minNodeSplit);
+                }
+
+                const originPos = result[origin.id].position;
+                let maxOriginSplit = originPos.x + 1;
+
+                while (maxOriginSplit < levels[originPos.y].length && maxOriginSplit < position.y && levels[originPos.y][maxOriginSplit] === undefined) {
+                    maxOriginSplit++;
+                }
+
+                if (maxOriginSplit === levels[originPos.y].length) {
+                    maxOriginSplit = position.x;
+                }
+
+                const tempMinNodeSplit = minNodeSplit < originPos.x ? originPos.x : minNodeSplit;
+
+                if (origin.id === 3) {
+                    console.log(maxOriginSplit);
+                    console.log(tempMinNodeSplit);
+                }
+
+                if (maxOriginSplit > tempMinNodeSplit) {
+                    const splitDiff = (maxOriginSplit - tempMinNodeSplit) / 2;
+                    let splitPoint = splitDiff;
+                    if (maxOriginSplit - originPos.x > position.x - tempMinNodeSplit) {
+                        splitPoint = (position.x - originPos.x) - splitDiff;
+                    }
+                    origin.split = [ splitPoint, splitPoint ]
+                }
+                else {
+                    origin.split = [tempMinNodeSplit + 0.5 - originPos.x, maxOriginSplit - 0.5 - originPos.x];
+                }
+            }
         }
 
         return [result, maxX];
@@ -179,7 +239,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
         let result: JSX.Element[] = [];
         let minY: number = 0;
 
-        for (const {node, position, originIds} of Object.values(nodeTree)) {
+        for (const {node, position, origins} of Object.values(nodeTree)) {
             minY = position.y < minY ? position.y : minY;
 
             result.push(
@@ -199,20 +259,20 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 />
             );
             
-            for (const originId of originIds) {
-                if (originId !== -1) {
-                    result.push(
-                        <Connection
-                            key={originId + '-' + node.id}
-                            from={{x: nodeTree[originId].position.x * xOffset, y: nodeTree[originId].position.y * yOffset}}
-                            to={{x: position.x * xOffset, y: position.y * yOffset}}
-                            curveSize={curveSize}
-                            color={nodeTree[originId].node.colorOutgoing ? nodeTree[originId].node.color : this.props.props.connectionColor}
-                            lineWidth={this.props.props.lineWidth}
-                            padding={10}
-                        />
-                    );
-                }
+            for (const origin of origins) {
+                result.push(
+                    <Connection
+                        key={origin.id + '-' + node.id}
+                        from={{x: nodeTree[origin.id].position.x * xOffset, y: nodeTree[origin.id].position.y * yOffset}}
+                        fromSplitPoint={origin.split[1] * xOffset}
+                        to={{x: position.x * xOffset, y: position.y * yOffset}}
+                        toSplitPoint={origin.split[0] * xOffset}
+                        curveSize={curveSize}
+                        color={nodeTree[origin.id].node.color}
+                        lineWidth={this.props.lineWidth}
+                        padding={10}
+                    />
+                );
             }
         }
 
