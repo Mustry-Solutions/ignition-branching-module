@@ -12,7 +12,7 @@ The branching component is made to display a tree structure horizontally. Displa
 
 The component has the following properties which can be adjusted in Ignition.
 
-```JSON
+```JSON5
 "properties": {
     "rootId": 0, // entry point for tree
     "data": [], // data used to build the tree view
@@ -28,7 +28,7 @@ The component has the following properties which can be adjusted in Ignition.
 
 The data is filled by nodes which can be tweaked individually. The most important properties are the id, used to identify a node. The category is important to tell the program what nodes should be displayed on the same level. And the nextId contains the id's of the nodes to draw a path to.
 
-```JSON
+```JSON5
 [
     {
         "color": "#ffffff", // color of the node --optional
