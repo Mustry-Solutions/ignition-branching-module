@@ -3,7 +3,7 @@ export interface InputType {
     name?: string;
     color?: string;
     nextId?: number[];
-    category: string;
+    category: number;
     fill?: boolean;
     style?: Object;
 }
@@ -13,7 +13,7 @@ export interface TreeNode {
     name?: string;
     color?: string;
     children: number[];
-    category: string;
+    category: number;
     fill?: boolean;
     style?: Object;
 }
