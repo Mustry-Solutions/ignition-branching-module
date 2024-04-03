@@ -104,26 +104,29 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
             return [{}, 0];
         }
 
-        let result: BuildTree = {};
-        let buffer: [TreeNode, Position, number][] = [[nodes[rootId], {x: 0, y: 0}, -1]];
-        let inBuffer: Set<number> = new Set();
-        inBuffer.add(rootId);
-        let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
-        let levels: { [ level: number ]: (number | undefined)[] } = { 0: [] };
-        let maxX: number = 0;
-
         // get all categories and order them to detirmen y level
         let categories: Set<number> = new Set<number>();
         Object.keys(nodes).forEach(nodeId => {
             categories.add(nodes[nodeId as unknown as number].category)
         });
         let sortedCategories = Array.from(categories);
-        sortedCategories.sort();
+        sortedCategories.sort((a, b) => a - b);
 
         const categoryLevels = sortedCategories.reduce((acc: {[key: number]: number}, category, index) => {
             acc[category] = index;
             return acc;
         }, {});
+
+        let result: BuildTree = {};
+        let buffer: [TreeNode, Position, number][] = [[nodes[rootId], {x: 0, y: categoryLevels[nodes[rootId].category]}, -1]];
+        let inBuffer: Set<number> = new Set();
+        inBuffer.add(rootId);
+        let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
+        let levels: { [ level: number ]: (number | undefined)[] } = {};
+        for (let i = 0; i < categories.size; i++) {
+            levels[i] = []
+        }
+        let maxX: number = 0;
 
         // BFS of all nodes starting with the root
         while (buffer.length > 0) {
@@ -135,10 +138,6 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 }
                 else {
                     let positionY = categoryLevels[nodes[childId].category]
-
-                    if (!(positionY in levels)) {
-                        levels[positionY] = []
-                    }
 
                     buffer.push([
                         nodes[childId],
@@ -202,10 +201,6 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
             }
 
             for (let origin of origins) {
-                if (origin.id === 3) {
-                    console.log(1, minNodeSplit);
-                }
-
                 const originPos = result[origin.id].position;
                 let maxOriginSplit = originPos.x + 1;
 
@@ -218,11 +213,6 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                 }
 
                 const tempMinNodeSplit = minNodeSplit < originPos.x ? originPos.x : minNodeSplit;
-
-                if (origin.id === 3) {
-                    console.log(maxOriginSplit);
-                    console.log(tempMinNodeSplit);
-                }
 
                 if (maxOriginSplit > tempMinNodeSplit) {
                     const splitDiff = (maxOriginSplit - tempMinNodeSplit) / 2;
