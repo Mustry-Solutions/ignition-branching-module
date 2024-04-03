@@ -208,7 +208,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                     maxOriginSplit++;
                 }
 
-                if (maxOriginSplit === levels[originPos.y].length) {
+                if (maxOriginSplit === levels[originPos.y].length || maxOriginSplit > position.x) {
                     maxOriginSplit = position.x;
                 }
 
