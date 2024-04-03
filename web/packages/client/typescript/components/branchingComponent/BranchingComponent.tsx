@@ -109,9 +109,6 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
         let inBuffer: Set<number> = new Set();
         inBuffer.add(rootId);
         let duplicateOrigins: [ duplicateId: number, originId: number ][] = [];
-        let prevLevel: number = 0;
-        let categoryLevels: { [ category: string ]: number } = {};
-        categoryLevels[nodes[rootId].category] = 0;
         let levels: { [ level: number ]: (number | undefined)[] } = { 0: [] };
         let maxX: number = 0;
 
@@ -124,21 +121,17 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
                     duplicateOrigins.push([childId, node.id]);
                 }
                 else {
-                    if (!(nodes[childId].category in categoryLevels)) {
-                        prevLevel *= -1;
-                        if (prevLevel <= 0) {
-                            prevLevel--;
-                        }
+                    let category = nodes[childId].category
 
-                        categoryLevels[nodes[childId].category] = prevLevel;
-                        levels[prevLevel] = [];
+                    if (!(category in levels)) {
+                        levels[category] = []
                     }
 
                     buffer.push([
                         nodes[childId],
                         {
                             x: position.x + 1,
-                            y: categoryLevels[nodes[childId].category]
+                            y: category
                         },
                         node.id
                     ]);
@@ -188,7 +181,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
             result[duplicateId].origins.push({id: originId, split: [0, 0]});
         }
 
-        // check wether connection can be drawn in the middle
+        // check if connection can be drawn in the middle
         for (let { position, origins } of Object.values(result)) {
             let minNodeSplit = position.x - 1;
             while (minNodeSplit > 0 && levels[position.y][minNodeSplit] === undefined) {

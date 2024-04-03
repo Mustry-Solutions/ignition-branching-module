@@ -40,7 +40,7 @@ The data is filled by nodes which can be tweaked individually. The most importan
             3,
             15
         ],
-        "category": "0", // all nodes with the same category will be drawn on the same level (y coordinate)
+        "category": 0, // all nodes with the same category will be drawn on the same level (y coordinate), higher number => lower level
         "icon": { // can be from the material library or any icon library imported in Ignition --optional
             "path": "material/check",
             "color": "blue"
