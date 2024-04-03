@@ -33,7 +33,7 @@ const DATA0: InputType[] = [
     "color": "#ff0000",
     "name": "node3",
     "id": 3,
-    "category": 1,
+    "category": 3,
     "fill": false
   },
   {

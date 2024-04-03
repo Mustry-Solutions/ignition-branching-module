@@ -94,6 +94,19 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
         let levels: { [ level: number ]: (number | undefined)[] } = { 0: [] };
         let maxX: number = 0;
 
+        // get all categories and order them to detirmen y level
+        let categories: Set<number> = new Set<number>();
+        Object.keys(nodes).forEach(nodeId => {
+            categories.add(nodes[nodeId as unknown as number].category)
+        });
+        let sortedCategories = Array.from(categories);
+        sortedCategories.sort();
+
+        const categoryLevels = sortedCategories.reduce((acc: {[key: number]: number}, category, index) => {
+            acc[category] = index;
+            return acc;
+        }, {});
+
         // BFS of all nodes starting with the root
         while (buffer.length > 0) {
             const [node, position, originId] = buffer.shift()!;
@@ -103,17 +116,17 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
                     duplicateOrigins.push([childId, node.id]);
                 }
                 else {
-                    let category = nodes[childId].category
+                    let positionY = categoryLevels[nodes[childId].category]
 
-                    if (!(category in levels)) {
-                        levels[category] = []
+                    if (!(positionY in levels)) {
+                        levels[positionY] = []
                     }
 
                     buffer.push([
                         nodes[childId],
                         {
                             x: position.x + 1,
-                            y: category
+                            y: positionY
                         },
                         node.id
                     ]);
