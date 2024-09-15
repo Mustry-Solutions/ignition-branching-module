@@ -6,6 +6,8 @@ export interface InputType {
     category: number;
     fill?: boolean;
     style?: Object;
+    infoCardMarkdown?: string;
+    infoCardStyle?: object;
 }
 
 export interface TreeNode {
@@ -15,7 +17,9 @@ export interface TreeNode {
     children: number[];
     category: number;
     fill?: boolean;
-    style?: Object;
+    style?: object;
+    infoCardMarkdown?: string;
+    infoCardStyle?: object;
 }
 
 export interface NodeDict {
@@ -31,6 +35,11 @@ export interface BuildTree {
     [id: number]: {
         node: TreeNode,
         position: Position,
-        origins: { id: number, split: [number, number] }[]
+        origins: Origin[]
     }
+}
+
+export interface Origin {
+    id: number,
+    split: [number, number]
 }

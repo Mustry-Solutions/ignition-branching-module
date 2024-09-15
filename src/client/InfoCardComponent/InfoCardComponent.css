@@ -1,0 +1,21 @@
+.infoCardWrapper {
+    display: none;
+
+    position: fixed;
+    transform: translate(-40%, -40%);
+
+    padding: 0 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 10px;
+    max-width: 350px;
+}
+
+.nodeContentWrapper:hover + .infoCardWrapper,
+.infoCardWrapper:hover {
+    display: block;
+}
+
+.nodeWrapper:has(.nodeContentWrapper:hover),
+.nodeWrapper:has(.infoCardWrapper:hover) {
+    z-index: 3;
+}

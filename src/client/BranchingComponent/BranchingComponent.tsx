@@ -1,7 +1,8 @@
 import * as React from 'react';
-import Connection from './Connection';
-import NodeElement from './Node';
-import { BuildTree, InputType, NodeDict, Position, TreeNode } from './types';
+import './BranchingComponent.css'
+import Connection from '../ConnectionComponent/ConnectionComponent';
+import NodeElement from '../NodeComponent/NodeComponent';
+import { BuildTree, InputType, NodeDict, Origin, Position, TreeNode } from '../types';
 
 interface BranchingComponentProps {
     data: InputType[];
@@ -12,6 +13,7 @@ interface BranchingComponentProps {
     lineWidth?: number;
     backgroundColor?: string;
     nodeSize?: number;
+    nodeBorderWidth?: number;
 }
 
 interface NodeState {
@@ -23,6 +25,9 @@ interface NodeState {
 
 export class BranchingComponent extends React.Component<BranchingComponentProps, NodeState> {
     elementRef: React.RefObject<any>;
+
+    static defaultProps = { nodeSize: 20, nodeBorderWidth: 2 }
+
     constructor(props: BranchingComponentProps) {
         super(props);
 
@@ -58,8 +63,8 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
 
     rebuildTree(): void {
         const [tree, maxX] = this.buildTree(this.convertInput(this.props.data), this.props.rootId);
-        const nodeSize = this.props.nodeSize ? this.props.nodeSize : 20;
-        let xOffset = (this.state.width - nodeSize) / maxX;
+        const absoluteNodeSize = this.props.nodeSize! + (this.props.nodeBorderWidth! * 2);
+        let xOffset = (this.state.width - absoluteNodeSize) / maxX;
         xOffset = xOffset < this.props.minXOffset ? this.props.minXOffset : xOffset;
 
         const [elements, yPadding] = this.displayTree(tree, xOffset, this.props.yOffset, this.props.curveSize);
@@ -68,17 +73,16 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
     }
 
     convertInput(input: InputType[]): NodeDict {
-        return input.reduce((obj: NodeDict, node: InputType): NodeDict => (
-            obj[node.id] = {
-                id: node.id,
-                name: node.name,
-                color: node.color,
-                children: node.nextId ? node.nextId : [],
-                category: node.category,
-                fill: node.fill,
-                style: node.style
-            }, obj
-        ), {});
+        return input.reduce((obj: NodeDict, node: InputType): NodeDict => {
+            const { nextId, ...validatedNode } = node;
+
+            return (
+                obj[node.id] = {
+                    children: nextId ? nextId : [],
+                    ...validatedNode
+                }, obj
+            );
+        }, {});
     }
 
     buildTree(nodes: NodeDict, rootId: number): [BuildTree, number] {
@@ -217,7 +221,7 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
         let result: JSX.Element[] = [];
         let minY: number = 0;
 
-        for (const {node, position, origins} of Object.values(nodeTree)) {
+        for (const {node, position, origins} of Object.values(nodeTree) as { node: TreeNode, position: Position, origins: Origin[] }[]) {
             minY = position.y < minY ? position.y : minY;
 
             result.push(
@@ -231,9 +235,12 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
                     color={node.color}
                     backgroundColor={this.props.backgroundColor}
                     fill={node.fill}
-                    size={this.props.nodeSize}
+                    size={this.props.nodeSize!}
+                    borderWidth={this.props.nodeBorderWidth!}
                     textSpace={xOffset - 30}
                     styleEmit={node.style}
+                    infoCardMarkdown={node.infoCardMarkdown}
+                    infoCardStyleEmit={node.infoCardStyle}
                 />
             );
             
@@ -258,12 +265,12 @@ export class BranchingComponent extends React.Component<BranchingComponentProps,
     }
 
     render() {
-        const nodeDisposition = this.props.nodeSize ? this.props.nodeSize / 2 : 10;
+        const nodeDisposition = (this.props.nodeSize! / 2) + this.props.nodeBorderWidth!;
         
         return (
             <div>
                 <div ref={this.elementRef} className='nodeTreeWrapper'>
-                    <div className='nodeTree' style={{transform: `translate(${nodeDisposition}px, ${this.state.yPadding + nodeDisposition}px)`}}>
+                    <div className='nodeTree' style={{top: nodeDisposition, left: this.state.yPadding + this.props.nodeBorderWidth!}}>
                         {this.state.innerElements}
                     </div>
                 </div>
