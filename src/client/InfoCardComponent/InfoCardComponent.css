@@ -2,8 +2,8 @@
     display: none;
 
     position: fixed;
-    transform: translate(-40%, -40%);
-
+    /* transform: translate(-40%, -40%); */
+    transform: translateY(20px);
     padding: 0 20px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-radius: 10px;
