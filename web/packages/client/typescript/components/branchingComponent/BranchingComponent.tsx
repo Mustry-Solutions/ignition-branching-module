@@ -9,7 +9,7 @@ import {
 } from '@inductiveautomation/perspective-client';
 import { InputType, TreeNode, NodeDict, Position, BuildTree } from './types';
 import NodeElement from './Node';
-import Connection from './Connection';
+import ConnectionComponent from './ConnectionComponent/ConnectionComponent';
 
 interface BranchingComponentProps {
     data: InputType[];
@@ -257,7 +257,7 @@ export class BranchingComponent extends Component<ComponentProps<BranchingCompon
             
             for (const origin of origins) {
                 result.push(
-                    <Connection
+                    <ConnectionComponent
                         key={origin.id + '-' + node.id}
                         from={{x: nodeTree[origin.id].position.x * xOffset, y: nodeTree[origin.id].position.y * yOffset}}
                         fromSplitPoint={origin.split[1] * xOffset}

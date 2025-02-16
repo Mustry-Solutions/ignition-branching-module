@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Position } from './types';
+import './ConnectionComponent.css';
+import { Position } from '../types';
 
-interface ConnectionProps {
+interface ConnectionComponentProps {
     from: Position;
     fromSplitPoint?: number;
     to: Position;
@@ -12,7 +13,7 @@ interface ConnectionProps {
     padding?: number;
 }
 
-const Connection = ({
+const ConnectionComponent = ({
     from,
     to,
     fromSplitPoint = (to.x - from.x) / 2,
@@ -21,7 +22,7 @@ const Connection = ({
     color = '#000000',
     lineWidth = 2,
     padding = 10
-}: ConnectionProps) => {
+}: ConnectionComponentProps) => {
     const margin: number = padding / 2;
     const curveStep: number = from.y === to.y ? 0 : curveSize;
 
@@ -60,4 +61,4 @@ const Connection = ({
     );
 }
 
-export default Connection;
+export default ConnectionComponent;
