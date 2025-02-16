@@ -6,6 +6,7 @@
  * To learn more about webpack, visit https://webpack.js.org/
  */
 
+
 const webpack = require('webpack'),
     path = require('path'),
     fs = require('fs'),
@@ -57,7 +58,8 @@ const config = {
 
     // define our entry point, from which we build our source tree for bundling
     entry: {
-        MustryUIComponents:  path.join(__dirname, "./typescript/mustry-ui-client-components.ts")
+        MustryUIComponents: path.join(__dirname, "./typescript/mustry-ui-client-components.ts"),
+        // ConnectionComponent: path.join(__dirname, "./typescript/component/ConnectionComponent/ConnectionComponent.ts"),
     },
 
     output: {
@@ -129,18 +131,18 @@ const config = {
         "mobx-react": "mobxReact",
         "@inductiveautomation/perspective-client": "PerspectiveClient"
     },
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                styles: {
-                    name: 'styles',
-                    test: /\.css$/,
-                    chunks: 'all',
-                    enforce: true,
-                },
-            },
-        },
-    },
+    // optimization: {
+    //     splitChunks: {
+    //         cacheGroups: {
+    //             styles: {
+    //                 name: 'styles',
+    //                 test: /\.css$/,
+    //                 chunks: 'all',
+    //                 enforce: true,
+    //             },
+    //         },
+    //     },
+    // },
 };
 
 
