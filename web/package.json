@@ -15,6 +15,8 @@
     "check": "lerna check"
   },
   "devDependencies": {
-    "lerna": "^6.1.0"
+    "css-loader": "7.1.2",
+    "lerna": "^6.1.0",
+    "mini-css-extract-plugin": "2.9.2"
   }
 }
