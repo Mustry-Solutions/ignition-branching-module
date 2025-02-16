@@ -58,7 +58,7 @@ ignitionModule {
      * Optional unsigned modl settings. If true, modl signing will be skipped. This is not for production and should
      * be used merely for development testing
      */
-    skipModlignition.signing.set(false)
+    skipModlSigning.set(true)
 }
 
 val deepClean by tasks.registering {
