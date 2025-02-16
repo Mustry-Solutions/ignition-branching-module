@@ -1,0 +1,43 @@
+.nodeWrapper {
+    margin: 0;
+    padding: 0;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.node {
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 12px;
+}
+
+.node .iconWrapper {
+    margin: 0;
+    padding: 0;
+
+    width: 20px;
+    height: 20px;
+
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: black;
+}
+
+.node .name {
+    margin: 0;
+
+    text-align: center;
+
+    padding: 2px;
+    position: absolute;
+
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: 200px;
+}
