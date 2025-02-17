@@ -11,6 +11,15 @@ import {
   TreeNode,
 } from "../types";
 
+import {
+  Component,
+  ComponentMeta,
+  ComponentProps,
+  PComponent,
+  PropertyTree,
+  SizeObject,
+} from "@inductiveautomation/perspective-client";
+
 interface BranchingComponentProps {
   data: InputType[];
   rootId: number;
@@ -29,16 +38,20 @@ interface NodeState {
   width: number;
   innerElements: JSX.Element[];
 }
-
-export class BranchingComponent extends React.Component<
-  BranchingComponentProps,
+export class BranchingComponent extends Component<
+  ComponentProps<BranchingComponentProps>,
   NodeState
 > {
+  // export class BranchingComponent extends React.Component<
+  //   BranchingComponentProps,
+  //   NodeState
+  // > {
   elementRef: React.RefObject<any>;
 
   static readonly defaultProps = { nodeSize: 20, nodeBorderWidth: 2 };
 
-  constructor(props: BranchingComponentProps) {
+  //   constructor(props: BranchingComponentProps) {
+  constructor(props: ComponentProps<BranchingComponentProps>) {
     super(props);
 
     this.elementRef = React.createRef();
@@ -60,7 +73,7 @@ export class BranchingComponent extends React.Component<
   }
 
   componentDidUpdate(
-    prevProps: Readonly<BranchingComponentProps>,
+    prevProps: Readonly<ComponentProps<BranchingComponentProps>>,
     prevState: Readonly<NodeState>,
     snapshot?: any
   ): void {
@@ -353,5 +366,40 @@ export class BranchingComponent extends React.Component<
         </div>
       </div>
     );
+  }
+}
+
+export const COMPONENT_TYPE = "mustryui.display.branching";
+
+export class BranchingComponentMeta implements ComponentMeta {
+  getComponentType(): string {
+    return COMPONENT_TYPE;
+  }
+
+  getViewComponent(): PComponent {
+    return BranchingComponent;
+  }
+
+  getDefaultSize(): SizeObject {
+    return {
+      width: 500,
+      height: 500,
+    };
+  }
+
+  getPropsReducer(propsTree: PropertyTree): BranchingComponentProps {
+    // const default_data: InputType[] = [];
+    return {
+      data: propsTree.readArray("data", []),
+      rootId: propsTree.readNumber("rootId", 0),
+      minXOffset: propsTree.readNumber("minXOffset", 50),
+      yOffset: propsTree.readNumber("yOffset", 50),
+      curveSize: propsTree.readNumber("curveSize", 10),
+      lineWidth: propsTree.readNumber("lineWidth", 2),
+
+      backgroundColor: propsTree.readString("backgroundColor", "white"),
+      nodeSize: propsTree.readNumber("nodeSize", 20),
+      nodeBorderWidth: propsTree.readNumber("nodeBorderWidth", 1),
+    };
   }
 }
