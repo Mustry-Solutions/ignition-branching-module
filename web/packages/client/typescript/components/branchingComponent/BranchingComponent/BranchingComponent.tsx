@@ -1,4 +1,12 @@
 import * as React from "react";
+import {
+  Component,
+  ComponentMeta,
+  ComponentProps,
+  PComponent,
+  PropertyTree,
+  SizeObject,
+} from "@inductiveautomation/perspective-client";
 import "./BranchingComponent.css";
 import Connection from "../ConnectionComponent/ConnectionComponent";
 import NodeElement from "../NodeComponent/NodeComponent";
@@ -11,14 +19,7 @@ import {
   TreeNode,
 } from "../types";
 
-import {
-  Component,
-  ComponentMeta,
-  ComponentProps,
-  PComponent,
-  PropertyTree,
-  SizeObject,
-} from "@inductiveautomation/perspective-client";
+
 
 interface BranchingComponentProps {
   data: InputType[];
@@ -42,11 +43,8 @@ export class BranchingComponent extends Component<
   ComponentProps<BranchingComponentProps>,
   NodeState
 > {
-  // export class BranchingComponent extends React.Component<
-  //   BranchingComponentProps,
-  //   NodeState
-  // > {
-  elementRef: React.RefObject<any>;
+
+
 
   static readonly defaultProps = { nodeSize: 20, nodeBorderWidth: 2 };
 
@@ -65,10 +63,17 @@ export class BranchingComponent extends Component<
 
   componentDidMount(): void {
     window.addEventListener("resize", this.handleResize);
-    if (this.elementRef.current) {
-      this.setState({ width: this.elementRef.current.offsetWidth });
-    }
+    // if (this.elementRef.current) {
+    //   this.setState({ width: this.elementRef.current.offsetWidth });
+    // }
+    // props.store.element is instead of using reference in react, this is the way ignition implements it
+    if (this.props.store.element) {
+      const nodeTreeWrapper = this.props.store.element.querySelector(".nodeTreeWrapper");
 
+      if (nodeTreeWrapper) {
+        this.setState({ width: nodeTreeWrapper.getBoundingClientRect().width });
+      }
+    }
     this.rebuildTree();
   }
 
@@ -86,10 +91,12 @@ export class BranchingComponent extends Component<
   }
 
   handleResize = (): void => {
-    if (this.elementRef.current) {
-      this.setState({
-        width: this.elementRef.current.getBoundingClientRect().width,
-      });
+    if (this.props.store.element) {
+      const nodeTreeWrapper =
+        this.props.store.element.querySelector(".nodeTreeWrapper");
+      if (nodeTreeWrapper) {
+        this.setState({ width: nodeTreeWrapper.getBoundingClientRect().width });
+      }
     }
   };
 
@@ -353,18 +360,45 @@ export class BranchingComponent extends Component<
     return [result, minY * -1 * yOffset];
   }
 
-  render() {
-    const nodeDisposition =
-      this.props.props.nodeSize! / 2 + this.props.props.nodeBorderWidth!;
+  // render() {
+  //   const nodeDisposition =
+  //     this.props.props.nodeSize! / 2 + this.props.props.nodeBorderWidth!;
 
+  //   return (
+  //     <div>
+  //       <div ref={this.elementRef} className="nodeTreeWrapper">
+  //         <div
+  //           className="nodeTree"
+  //           style={{
+  //             top: nodeDisposition,
+  //             left: this.state.yPadding + this.props.props.nodeBorderWidth!,
+  //           }}
+  //         >
+  //           {this.state.innerElements}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+  render() {
+    const nodeDisposition = this.props.nodeSize ? this.props.nodeSize / 2 : 10;
+
+    const emitter = this.props.emit();
+    emitter.style["min-width"] = `${
+      this.state.maxWidthElements * this.props.props.minXOffset
+    }px`;
+    emitter.className = emitter.className
+      ? emitter.className + " nodeTreeWrapperWrapper"
+      : "nodeTreeWrapperWrapper";
     return (
-      <div>
-        <div ref={this.elementRef} className="nodeTreeWrapper">
+      <div {...emitter}>
+        <div className="nodeTreeWrapper">
           <div
             className="nodeTree"
             style={{
-              top: nodeDisposition,
-              left: this.state.yPadding + this.props.props.nodeBorderWidth!,
+              transform: `translate(${nodeDisposition}px, ${
+                this.state.yPadding + nodeDisposition
+              }px)`,
             }}
           >
             {this.state.innerElements}
@@ -396,7 +430,6 @@ export class BranchingComponentMeta implements ComponentMeta {
   getPropsReducer(propsTree: PropertyTree): BranchingComponentProps {
     // const default_data: InputType[] = [];
 
-    
     return {
       data: propsTree.readArray("data", []),
       rootId: propsTree.readNumber("rootId", 0),
