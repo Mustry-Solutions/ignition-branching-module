@@ -77,7 +77,10 @@ export class BranchingComponent extends Component<
     prevState: Readonly<NodeState>,
     snapshot?: any
   ): void {
-    if (this.props !== prevProps || prevState.width !== this.state.width) {
+    if (
+      this.props.props !== prevProps.props ||
+      prevState.width !== this.state.width
+    ) {
       this.rebuildTree();
     }
   }
@@ -92,19 +95,22 @@ export class BranchingComponent extends Component<
 
   rebuildTree(): void {
     const [tree, maxX] = this.buildTree(
-      this.convertInput(this.props.data),
-      this.props.rootId
+      this.convertInput(this.props.props.data),
+      this.props.props.rootId
     );
     const absoluteNodeSize =
-      this.props.nodeSize! + this.props.nodeBorderWidth! * 2;
+      this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
     let xOffset = (this.state.width - absoluteNodeSize) / maxX;
-    xOffset = xOffset < this.props.minXOffset ? this.props.minXOffset : xOffset;
+    xOffset =
+      xOffset < this.props.props.minXOffset
+        ? this.props.props.minXOffset
+        : xOffset;
 
     const [elements, yPadding] = this.displayTree(
       tree,
       xOffset,
-      this.props.yOffset,
-      this.props.curveSize
+      this.props.props.yOffset,
+      this.props.props.curveSize
     );
 
     this.setState({
@@ -313,10 +319,10 @@ export class BranchingComponent extends Component<
           x={position.x * xOffset}
           y={position.y * yOffset}
           color={node.color}
-          backgroundColor={this.props.backgroundColor}
+          backgroundColor={this.props.props.backgroundColor}
           fill={node.fill}
-          size={this.props.nodeSize!}
-          borderWidth={this.props.nodeBorderWidth!}
+          size={this.props.props.nodeSize!}
+          borderWidth={this.props.props.nodeBorderWidth!}
           textSpace={xOffset - 30}
           styleEmit={node.style}
           infoCardMarkdown={node.infoCardMarkdown}
@@ -349,7 +355,7 @@ export class BranchingComponent extends Component<
 
   render() {
     const nodeDisposition =
-      this.props.nodeSize! / 2 + this.props.nodeBorderWidth!;
+      this.props.props.nodeSize! / 2 + this.props.props.nodeBorderWidth!;
 
     return (
       <div>
@@ -358,7 +364,7 @@ export class BranchingComponent extends Component<
             className="nodeTree"
             style={{
               top: nodeDisposition,
-              left: this.state.yPadding + this.props.nodeBorderWidth!,
+              left: this.state.yPadding + this.props.props.nodeBorderWidth!,
             }}
           >
             {this.state.innerElements}
@@ -389,6 +395,8 @@ export class BranchingComponentMeta implements ComponentMeta {
 
   getPropsReducer(propsTree: PropertyTree): BranchingComponentProps {
     // const default_data: InputType[] = [];
+
+    
     return {
       data: propsTree.readArray("data", []),
       rootId: propsTree.readNumber("rootId", 0),
