@@ -7,11 +7,12 @@ import {
   PropertyTree,
   SizeObject,
 } from "@inductiveautomation/perspective-client";
+import { BuildTree,InputType,NodeDict,Origin,Position,
+  TreeNode} from "../types";
 import "./BranchingComponent.css";
 import Connection from "../ConnectionComponent/ConnectionComponent";
 import NodeElement from "../NodeComponent/NodeComponent";
-import {
-  BuildTree,
+
   InputType,
   NodeDict,
   Origin,

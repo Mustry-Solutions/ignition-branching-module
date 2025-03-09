@@ -12,6 +12,14 @@ const DATA0: InputType[] = [
     nextId: [2, 3, 6],
     fill: false,
     category: 0,
+    infoCardMarkdown:`
+  # Node 1 Info
+  ## Node 1 Subtitle
+  This is the first node. It is connected to 
+  - Node 2
+  - Node 3
+  - Node 6
+  `
   },
   {
     nextId: [4],
@@ -19,6 +27,8 @@ const DATA0: InputType[] = [
     id: 2,
     category: 0,
     fill: false,
+    infoCardMarkdown:`
+  ## Node 2 Info`
   },
   {
     nextId: [5],
@@ -27,6 +37,7 @@ const DATA0: InputType[] = [
     id: 3,
     category: 3,
     fill: false,
+    infoCardMarkdown:`**Simple text**`
   },
   {
     nextId: [5],
@@ -35,6 +46,8 @@ const DATA0: InputType[] = [
     id: 6,
     category: 2,
     fill: false,
+    infoCardMarkdown:`# Veeeeeery loooooonng teeeeexxxt`
+    
   },
   {
     nextId: [5],
@@ -42,6 +55,10 @@ const DATA0: InputType[] = [
     id: 4,
     category: 0,
     fill: false,
+    infoCardMarkdown:`# Node 4 Info
+---
+## Node 4 Subtitle
+This is only connected to **Node 5**`
   },
   {
     nextId: [],
@@ -49,6 +66,16 @@ const DATA0: InputType[] = [
     id: 5,
     category: 0,
     fill: false,
+    infoCardMarkdown:`
+Here is a code block with JSON inside:
+
+\`\`\`json
+{
+  "a": "b",
+  "c": "c"
+}
+\`\`\`
+`
   },
 ];
 
@@ -102,6 +129,7 @@ const DATA3: InputType[] = [
       fontFamily: "Comic Sans MS",
       color: "blue",
     },
+    infoCardMarkdown:"Answer for this question even if you have two legs"
   },
   {
     name: "No",
@@ -125,6 +153,7 @@ const DATA3: InputType[] = [
     nextId: [4],
     fill: false,
     category: 0,
+    infoCardMarkdown:`Having problems with the definition`
   },
   {
     color: "#18b918",
@@ -220,11 +249,11 @@ const DATA3: InputType[] = [
 function App() {
   return (
     <div className="App">
-      <div
-        style={{
-          position: "relative",
-          top: "20px",
-        }}
+      {/* <div
+        // style={{
+        //   position: "relative",
+        //   top: "600px",
+        // }}
       >
         <h1>Example 1</h1>
         <BranchingComponent
@@ -236,10 +265,10 @@ function App() {
         />
       </div>
       <div
-        style={{
-          position: "relative",
-          top: "300px",
-        }}
+        // style={{
+        //   position: "relative",
+        //   top: "300px",
+        // }}
       >
         <h1>Example 2</h1>
         <BranchingComponent
@@ -249,12 +278,12 @@ function App() {
           yOffset={100}
           curveSize={20}
         />
-      </div>
+      </div> */}
       <div
-        style={{
-          position: "relative",
-          top: "600px",
-        }}
+        // style={{
+        //   position: "relative",
+        //   top: "00px",
+        // }}
       >
         <h1>Example 3</h1>
         <BranchingComponent

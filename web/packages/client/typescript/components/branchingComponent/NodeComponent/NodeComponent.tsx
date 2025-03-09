@@ -3,13 +3,6 @@ import './NodeComponent.css';
 import Icon from '../IconComponent/IconComponent';
 import InfoCard from '../InfoCardComponent/InfoCardComponent';
 
-const placeholderText = `
-# Title
-## Subtitle
-There is some text here that should be rendered.
-- Couple of interresting points
-- And also this
-`;
 
 interface NodeProps {
     icon?: string;
@@ -28,7 +21,6 @@ interface NodeProps {
     infoCardStyleEmit?: object;
 }
 
-// TODO: replace placeholder markdown
 const NodeElement = ({
     icon,
     iconColor = '#ffffff',
@@ -73,7 +65,7 @@ const NodeElement = ({
             </div>
         </div>
         <InfoCard
-            markdown={placeholderText}
+            markdown={infoCardMarkdown}
             backgroundColor={backgroundColor}
             styleEmit={infoCardStyleEmit}
         />
