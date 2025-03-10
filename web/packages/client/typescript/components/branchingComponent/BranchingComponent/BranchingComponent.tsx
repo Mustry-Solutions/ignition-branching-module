@@ -13,12 +13,6 @@ import "./BranchingComponent.css";
 import Connection from "../ConnectionComponent/ConnectionComponent";
 import NodeElement from "../NodeComponent/NodeComponent";
 
-  InputType,
-  NodeDict,
-  Origin,
-  Position,
-  TreeNode,
-} from "../types";
 
 
 
@@ -45,15 +39,10 @@ export class BranchingComponent extends Component<
   NodeState
 > {
 
-
-
-  static readonly defaultProps = { nodeSize: 20, nodeBorderWidth: 2 };
-
-  //   constructor(props: BranchingComponentProps) {
   constructor(props: ComponentProps<BranchingComponentProps>) {
     super(props);
 
-    this.elementRef = React.createRef();
+    
     this.state = {
       yPadding: 0,
       maxWidthElements: 0,
@@ -64,9 +53,7 @@ export class BranchingComponent extends Component<
 
   componentDidMount(): void {
     window.addEventListener("resize", this.handleResize);
-    // if (this.elementRef.current) {
-    //   this.setState({ width: this.elementRef.current.offsetWidth });
-    // }
+   
     // props.store.element is instead of using reference in react, this is the way ignition implements it
     if (this.props.store.element) {
       const nodeTreeWrapper = this.props.store.element.querySelector(".nodeTreeWrapper");
@@ -106,9 +93,11 @@ export class BranchingComponent extends Component<
       this.convertInput(this.props.props.data),
       this.props.props.rootId
     );
-    const absoluteNodeSize =
-      this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
+    const absoluteNodeSize = this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
+      
     let xOffset = (this.state.width - absoluteNodeSize) / maxX;
+
+    
     xOffset =
       xOffset < this.props.props.minXOffset
         ? this.props.props.minXOffset
@@ -134,7 +123,7 @@ export class BranchingComponent extends Component<
 
       return (
         (obj[node.id] = {
-          children: nextId ? nextId : [],
+          children: node.nextId ?  node.nextId : [],
           ...validatedNode,
         }),
         obj
