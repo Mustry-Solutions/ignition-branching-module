@@ -306,8 +306,8 @@ export class BranchingComponent extends React.Component<
           borderWidth={this.props.nodeBorderWidth!}
           textSpace={xOffset - 30}
           styleEmit={node.style}
-          infoCardMarkdown={node.infoCardMarkdown}
-          infoCardStyleEmit={node.infoCardStyle}
+          infoCardMarkdown={node.tooltip}
+          infoCardStyleEmit={node.tooltipStyle}
         />
       );
 

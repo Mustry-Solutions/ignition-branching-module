@@ -19,8 +19,8 @@ export interface TreeNode {
   fill?: boolean;
   style?: object;
   icon?: { path: string; color?: string };
-  infoCardMarkdown?: string;
-  infoCardStyle?: object;
+  tooltip?: string;
+  tooltipStyle?: object;
 }
 
 export interface NodeDict {

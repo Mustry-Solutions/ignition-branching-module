@@ -12,14 +12,14 @@ const DATA0: InputType[] = [
     nextId: [2, 3, 6],
     fill: false,
     category: 0,
-    infoCardMarkdown:`
+    tooltip: `
   # Node 1 Info
   ## Node 1 Subtitle
   This is the first node. It is connected to 
   - Node 2
   - Node 3
   - Node 6
-  `
+  `,
   },
   {
     nextId: [4],
@@ -27,8 +27,8 @@ const DATA0: InputType[] = [
     id: 2,
     category: 0,
     fill: false,
-    infoCardMarkdown:`
-  ## Node 2 Info`
+    tooltip: `
+  ## Node 2 Info`,
   },
   {
     nextId: [5],
@@ -37,7 +37,7 @@ const DATA0: InputType[] = [
     id: 3,
     category: 3,
     fill: false,
-    infoCardMarkdown:`**Simple text**`
+    tooltip: `**Simple text**`,
   },
   {
     nextId: [5],
@@ -46,8 +46,7 @@ const DATA0: InputType[] = [
     id: 6,
     category: 2,
     fill: false,
-    infoCardMarkdown:`# Veeeeeery loooooonng teeeeexxxt`
-    
+    tooltip: `# Veeeeeery loooooonng teeeeexxxt`,
   },
   {
     nextId: [5],
@@ -55,10 +54,10 @@ const DATA0: InputType[] = [
     id: 4,
     category: 0,
     fill: false,
-    infoCardMarkdown:`# Node 4 Info
+    tooltip: `# Node 4 Info
 ---
 ## Node 4 Subtitle
-This is only connected to **Node 5**`
+This is only connected to **Node 5**`,
   },
   {
     nextId: [],
@@ -66,7 +65,7 @@ This is only connected to **Node 5**`
     id: 5,
     category: 0,
     fill: false,
-    infoCardMarkdown:`
+    tooltip: `
 Here is a code block with JSON inside:
 
 \`\`\`json
@@ -75,7 +74,7 @@ Here is a code block with JSON inside:
   "c": "c"
 }
 \`\`\`
-`
+`,
   },
 ];
 
@@ -129,7 +128,7 @@ const DATA3: InputType[] = [
       fontFamily: "Comic Sans MS",
       color: "blue",
     },
-    infoCardMarkdown:"Answer for this question even if you have two legs"
+    tooltip: "Answer for this question even if you have two legs",
   },
   {
     name: "No",
@@ -153,7 +152,7 @@ const DATA3: InputType[] = [
     nextId: [4],
     fill: false,
     category: 0,
-    infoCardMarkdown:`Having problems with the definition`
+    tooltip: `Having problems with the definition`,
   },
   {
     color: "#18b918",
@@ -280,10 +279,10 @@ function App() {
         />
       </div> */}
       <div
-        // style={{
-        //   position: "relative",
-        //   top: "00px",
-        // }}
+      // style={{
+      //   position: "relative",
+      //   top: "00px",
+      // }}
       >
         <h1>Example 3</h1>
         <BranchingComponent
