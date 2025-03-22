@@ -37,8 +37,8 @@ const ConnectionComponent = ({
 
     return (
         <svg className='nodePath' style={{
-                left: from.x - margin,
-                top: from.y < to.y ? from.y - margin : to.y - margin,
+                left: from.x - margin ,
+                top: from.y < to.y ? from.y - margin  : to.y - margin ,
                 width: to.x - from.x + padding,
                 height: Math.abs(from.y - to.y) + padding
                 }}>
