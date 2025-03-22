@@ -7,14 +7,17 @@ import {
   PropertyTree,
   SizeObject,
 } from "@inductiveautomation/perspective-client";
-import { BuildTree,InputType,NodeDict,Origin,Position,
-  TreeNode} from "../types";
+import {
+  BuildTree,
+  InputType,
+  NodeDict,
+  Origin,
+  Position,
+  TreeNode,
+} from "../types";
 import "./BranchingComponent.css";
 import Connection from "../ConnectionComponent/ConnectionComponent";
 import NodeElement from "../NodeComponent/NodeComponent";
-
-
-
 
 interface BranchingComponentProps {
   data: InputType[];
@@ -38,11 +41,9 @@ export class BranchingComponent extends Component<
   ComponentProps<BranchingComponentProps>,
   NodeState
 > {
-
   constructor(props: ComponentProps<BranchingComponentProps>) {
     super(props);
 
-    
     this.state = {
       yPadding: 0,
       maxWidthElements: 0,
@@ -53,10 +54,11 @@ export class BranchingComponent extends Component<
 
   componentDidMount(): void {
     window.addEventListener("resize", this.handleResize);
-   
+
     // props.store.element is instead of using reference in react, this is the way ignition implements it
     if (this.props.store.element) {
-      const nodeTreeWrapper = this.props.store.element.querySelector(".nodeTreeWrapper");
+      const nodeTreeWrapper =
+        this.props.store.element.querySelector(".nodeTreeWrapper");
 
       if (nodeTreeWrapper) {
         this.setState({ width: nodeTreeWrapper.getBoundingClientRect().width });
@@ -93,11 +95,11 @@ export class BranchingComponent extends Component<
       this.convertInput(this.props.props.data),
       this.props.props.rootId
     );
-    const absoluteNodeSize = this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
-      
+    const absoluteNodeSize =
+      this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
+
     let xOffset = (this.state.width - absoluteNodeSize) / maxX;
 
-    
     xOffset =
       xOffset < this.props.props.minXOffset
         ? this.props.props.minXOffset
@@ -123,7 +125,7 @@ export class BranchingComponent extends Component<
 
       return (
         (obj[node.id] = {
-          children: node.nextId ?  node.nextId : [],
+          children: node.nextId ? node.nextId : [],
           ...validatedNode,
         }),
         obj
@@ -310,8 +312,8 @@ export class BranchingComponent extends Component<
       result.push(
         <NodeElement
           key={node.id}
-          icon={"material/check"}
-          iconColor="white"
+          icon={node.icon?.path}
+          iconColor={node.icon?.color}
           name={node.name}
           x={position.x * xOffset}
           y={position.y * yOffset}

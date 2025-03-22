@@ -18,6 +18,7 @@ export interface TreeNode {
   category: number;
   fill?: boolean;
   style?: object;
+  icon?: { path: string; color?: string };
   infoCardMarkdown?: string;
   infoCardStyle?: object;
 }
