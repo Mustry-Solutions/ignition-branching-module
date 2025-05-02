@@ -13,7 +13,7 @@ import {
 
 interface BranchingComponentProps {
   data: InputType[];
-  rootId: number;
+  // rootId: number;
   minXOffset: number;
   yOffset: number;
   curveSize?: number;
@@ -29,7 +29,19 @@ interface NodeState {
   width: number;
   innerElements: JSX.Element[];
 }
+function findRootsWithOutgoingOnly(nodes: InputType[]): number {
+  const referencedIds = new Set(nodes.flatMap((node) => node.nextId ?? []));
 
+  const roots = nodes
+    .filter((node) => {
+      const hasOutgoing = (node.nextId ?? []).length > 0;
+      const isNotReferenced = !referencedIds.has(node.id);
+      return hasOutgoing && isNotReferenced;
+    })
+    .map((node) => node.id);
+
+  return roots[0];
+}
 export class BranchingComponent extends React.Component<
   BranchingComponentProps,
   NodeState
@@ -80,7 +92,7 @@ export class BranchingComponent extends React.Component<
   rebuildTree(): void {
     const [tree, maxX] = this.buildTree(
       this.convertInput(this.props.data),
-      this.props.rootId
+      findRootsWithOutgoingOnly(this.props.data)
     );
     const absoluteNodeSize =
       this.props.nodeSize! + this.props.nodeBorderWidth! * 2;

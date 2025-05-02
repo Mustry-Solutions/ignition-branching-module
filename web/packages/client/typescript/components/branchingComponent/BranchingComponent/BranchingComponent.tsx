@@ -21,7 +21,7 @@ import NodeElement from "../NodeComponent/NodeComponent";
 
 interface BranchingComponentProps {
   data: InputType[];
-  rootId: number;
+  // rootId: number;
   minXOffset: number;
   yOffset: number;
   curveSize?: number;
@@ -37,6 +37,20 @@ interface NodeState {
   width: number;
   innerElements: JSX.Element[];
 }
+
+function findRootsWithOutgoingOnly(nodes: InputType[]): number {
+  const referencedIds = new Set(nodes.flatMap((node) => node.nextId ?? []));
+  const roots = nodes
+
+    .filter((node) => {
+      const hasOutgoing = (node.nextId ?? []).length > 0;
+      const isNotReferenced = !referencedIds.has(node.id);
+      return hasOutgoing && isNotReferenced;
+    })
+    .map((node) => node.id);
+  return roots[0];
+}
+
 export class BranchingComponent extends Component<
   ComponentProps<BranchingComponentProps>,
   NodeState
@@ -93,7 +107,7 @@ export class BranchingComponent extends Component<
   rebuildTree(): void {
     const [tree, maxX] = this.buildTree(
       this.convertInput(this.props.props.data),
-      this.props.props.rootId
+      findRootsWithOutgoingOnly(this.props.props.data)
     );
     const absoluteNodeSize =
       this.props.props.nodeSize! + this.props.props.nodeBorderWidth! * 2;
@@ -424,7 +438,7 @@ export class BranchingComponentMeta implements ComponentMeta {
 
     return {
       data: propsTree.readArray("data", []),
-      rootId: propsTree.readNumber("rootId", 0),
+      // rootId: propsTree.readNumber("rootId", 0),
       minXOffset: propsTree.readNumber("minXOffset", 50),
       yOffset: propsTree.readNumber("yOffset", 50),
       curveSize: propsTree.readNumber("curveSize", 10),
