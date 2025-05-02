@@ -9,7 +9,7 @@ const DATA0: InputType[] = [
   {
     name: "node1",
     id: 0,
-    nextId: [2, 3, 6],
+    nextId: [2],
     fill: false,
     category: 0,
     tooltip: `
@@ -30,24 +30,24 @@ const DATA0: InputType[] = [
     tooltip: `
   ## Node 2 Info`,
   },
-  {
-    nextId: [5],
-    color: "#ff0000",
-    name: "node3",
-    id: 3,
-    category: 3,
-    fill: false,
-    tooltip: `**Simple text**`,
-  },
-  {
-    nextId: [5],
-    color: "#ff0000",
-    name: "node6",
-    id: 6,
-    category: 2,
-    fill: false,
-    tooltip: `# Veeeeeery loooooonng teeeeexxxt`,
-  },
+  // {
+  //   nextId: [5],
+  //   color: "#ff0000",
+  //   name: "node3",
+  //   id: 3,
+  //   category: 3,
+  //   fill: false,
+  //   tooltip: `**Simple text**`,
+  // },
+  // {
+  //   nextId: [5],
+  //   color: "#ff0000",
+  //   name: "node6",
+  //   id: 6,
+  //   category: 2,
+  //   fill: false,
+  //   tooltip: `# Veeeeeery loooooonng teeeeexxxt`,
+  // },
   {
     nextId: [5],
     name: "node4",
@@ -245,39 +245,225 @@ const DATA3: InputType[] = [
   },
 ];
 
+const DATA4 = [
+  {
+    nextId: [10, 5, 3, 13, 11, 8],
+    color: "#000080",
+    isRoot: true,
+    name: "Klaar voor productie",
+    id: 20,
+    fill: true,
+    category: -10,
+  },
+  {
+    nextId: [4],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-montage kast",
+    id: 6,
+    fill: true,
+    category: -10,
+  },
+  {
+    nextId: [7],
+    name: "Rolluiken-sluiten kast",
+    id: 2,
+    category: 0,
+  },
+  {
+    nextId: [1],
+
+    name: "Productie klaar",
+    id: 7,
+    category: 0,
+  },
+  {
+    nextId: [],
+    name: "Inpak",
+    id: 1,
+    category: 0,
+  },
+  {
+    nextId: [6],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-voormontage",
+    id: 3,
+    fill: true,
+    category: 0,
+  },
+  {
+    nextId: [2],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-montage pantser",
+    id: 4,
+    fill: true,
+    category: 0,
+  },
+  {
+    nextId: [4],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-controle geleiders",
+    id: 5,
+    fill: true,
+    category: -40,
+  },
+
+  {
+    nextId: [9],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-zagen as",
+    id: 8,
+    fill: false,
+    category: -10,
+  },
+  {
+    nextId: [6],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-montage motor",
+    id: 9,
+    fill: false,
+    category: -10,
+  },
+  {
+    nextId: [4],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken Dallan",
+    id: 10,
+    fill: true,
+    category: 10,
+  },
+  {
+    nextId: [6],
+    color: "#000080",
+    isRoot: false,
+    name: "Zagen standaard kleur",
+    id: 11,
+    fill: true,
+    category: -20,
+  },
+  {
+    nextId: [4],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-klaarmaken onderlat",
+    id: 12,
+    fill: true,
+    category: 20,
+  },
+  {
+    nextId: [12, 14],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-zagen pantser",
+    id: 13,
+    fill: false,
+    category: 20,
+  },
+  {
+    nextId: [4],
+    color: "#000080",
+    isRoot: false,
+    name: "Rolluiken-arreteren",
+    id: 14,
+    fill: false,
+    category: 30,
+  },
+];
+const DATA5 = [
+  {
+    name: "node1",
+    id: 0,
+    nextId: [2],
+    category: 0,
+  },
+  {
+    nextId: [4],
+    name: "node2",
+    id: 2,
+    category: 0,
+  },
+  {
+    nextId: [],
+    name: "node4",
+    id: 4,
+    category: 0,
+  },
+];
+
+const DATA6 = [
+  {
+    name: "Rolluiken-sluiten kast",
+    id: 0,
+
+    nextId: [2],
+    category: 0,
+  },
+  {
+    name: "Productie klaar",
+    id: 2,
+    nextId: [1],
+
+    category: 0,
+  },
+  {
+    name: "Inpak",
+    id: 1,
+
+    nextId: [],
+    category: 0,
+  },
+];
+
+function findRootsWithOutgoingOnly(nodes: InputType[]): number {
+  const referencedIds = new Set(nodes.flatMap((node) => node.nextId ?? []));
+
+  const roots = nodes
+    .filter((node) => {
+      const hasOutgoing = (node.nextId ?? []).length > 0;
+      const isNotReferenced = !referencedIds.has(node.id);
+      return hasOutgoing && isNotReferenced;
+    })
+    .map((node) => node.id);
+
+  return roots[0];
+}
 function App() {
   return (
     <div className="App">
-      {/* <div
-        // style={{
-        //   position: "relative",
-        //   top: "600px",
-        // }}
+      <div
+      // style={{
+      //   position: "relative",
+      //   top: "600px",
+      // }}
       >
         <h1>Example 1</h1>
         <BranchingComponent
           data={DATA0}
-          rootId={0}
           minXOffset={100}
           yOffset={100}
           curveSize={20}
         />
       </div>
       <div
-        // style={{
-        //   position: "relative",
-        //   top: "300px",
-        // }}
+      // style={{
+      //   position: "relative",
+      //   top: "300px",
+      // }}
       >
         <h1>Example 2</h1>
         <BranchingComponent
           data={DATA1}
-          rootId={0}
           minXOffset={100}
           yOffset={100}
           curveSize={20}
         />
-      </div> */}
+      </div>
       <div
       // style={{
       //   position: "relative",
@@ -287,7 +473,20 @@ function App() {
         <h1>Example 3</h1>
         <BranchingComponent
           data={DATA3}
-          rootId={0}
+          minXOffset={100}
+          yOffset={100}
+          curveSize={20}
+        />{" "}
+      </div>
+      <div
+      // style={{
+      //   position: "relative",
+      //   top: "00px",
+      // }}
+      >
+        <h1>Example 3</h1>
+        <BranchingComponent
+          data={DATA4}
           minXOffset={100}
           yOffset={100}
           curveSize={20}
