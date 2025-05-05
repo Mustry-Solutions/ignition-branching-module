@@ -1,65 +1,60 @@
 {
-    "type": "object",
-    "additionalProperties": false,
-    "required": [
-      "rootId",
-      "data"
-    ],
-    "properties": {
-        "rootId": {
-          "type": "number",
-          "description": "Entry point for tree.",
-          "default": 0
-        },
-        "data": {
-          "type": "array",
-          "description": "Data used to build the tree view.",
-          "default": []
-        },
-        "minXOffset": {
-          "type": "number",
-          "description": "The minimum horizontal offset of the nodes in pixels.",
-          "default": 50
-        },
-        "yOffset": {
-          "type": "number",
-          "description": "The vertical offset of nodes in pixels.",
-          "default": 50
-        },
-        "lineWidth": {
-          "type": "number",
-          "description": "The width of the line connecting the nodes in pixels.",
-          "default": 2
-        },
-        "connectionColor": {
-          "type": "string",
-          "format": "color",
-          "description": "The default color of the connection between nodes. (can be overwritten by node color using colorOutgoing)",
-          "default": "black"
-        },
-        "backgroundColor": {
-          "type": "string",
-          "format": "color",
-          "description": "The background color of the component, used because the nodes draw over the node connections.",
-          "default": "white"
-        },
-        "curveSize": {
-          "type": "number",
-          "description": "The size of the curve, must be smaller or equal to half the x and y offset.",
-          "default": 10
-        },
-        "nodeSize": {
-          "type": "number",
-          "description": "Width and height of 1 node in pixels.",
-          "default": 20
-        },
-        "style": {
-            "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
-            "default": {
-                "classes": "",
-                "font-family": "inherit",
-                "font-size": "inherit"
-            }
-        }
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "rootId",
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "array",
+      "description": "Data used to build the tree view.",
+      "default": []
+    },
+    "minXOffset": {
+      "type": "number",
+      "description": "The minimum horizontal offset of the nodes in pixels.",
+      "default": 50
+    },
+    "yOffset": {
+      "type": "number",
+      "description": "The vertical offset of nodes in pixels.",
+      "default": 50
+    },
+    "lineWidth": {
+      "type": "number",
+      "description": "The width of the line connecting the nodes in pixels.",
+      "default": 2
+    },
+    "connectionColor": {
+      "type": "string",
+      "format": "color",
+      "description": "The default color of the connection between nodes. (can be overwritten by node color using colorOutgoing)",
+      "default": "black"
+    },
+    "backgroundColor": {
+      "type": "string",
+      "format": "color",
+      "description": "The background color of the component, used because the nodes draw over the node connections.",
+      "default": "white"
+    },
+    "curveSize": {
+      "type": "number",
+      "description": "The size of the curve, must be smaller or equal to half the x and y offset.",
+      "default": 10
+    },
+    "nodeSize": {
+      "type": "number",
+      "description": "Width and height of 1 node in pixels.",
+      "default": 20
+    },
+    "style": {
+      "$ref": "urn:ignition-schema:schemas/style-properties.schema.json",
+      "default": {
+        "classes": "",
+        "font-family": "inherit",
+        "font-size": "inherit"
+      }
     }
+  }
 }
