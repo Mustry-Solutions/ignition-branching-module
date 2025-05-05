@@ -8,7 +8,6 @@ The component has the following properties which can be adjusted in Ignition.
 
 ```JSON5
 "properties": {
-    "rootId": 0, // entry point for tree
     "data": [], // data used to build the tree view
     "minXOffset": 50, // the minimum horizontal offset of the nodes in pixels
     "yOffset": 50, // the vertical offset of nodes in pixels
@@ -42,6 +41,10 @@ The data is filled by nodes which can be tweaked individually. The most importan
         "style": { // specific css for this node can be added --optional
             "fontFamily": "Comic Sans MS",
             "color": "blue"
+        },
+        "tooltip": "**Simple text**", // string with markdown tags, tooltip will pop up at hovering 
+        "tooltipStyle": {   // specific css for this tooltip
+            "color": "red"
         }
     },
     ...
